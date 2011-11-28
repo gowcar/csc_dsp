@@ -1,0 +1,38 @@
+.login-form{
+	width: 1024px;
+	height:768px;
+	position: relative;
+	background-image: url("../img/login_bg.png");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.login-form .login-username{
+	position:absolute;
+	left: 748px;
+	top:282px;
+	height:26px;
+	width:170px;
+	background:transparent;
+	border: none;
+	color: white;
+}
+
+.login-form .login-password{
+	position:absolute;
+	left: 748px;
+	top:342px;
+	height:26px;
+	width:170px;
+	background:transparent;
+	border: none;
+	color: white;
+}
+
+.login-form .login-btn{
+	position:absolute;
+	left: 650px;
+	top:400px;
+	height:58px;
+	width:130px;
+}
