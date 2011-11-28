@@ -45276,13 +45276,14 @@ Ext.define('Ext.fx.runner.CssTransition', {
 
            document.body.appendChild(iframe);
            iframeDocument = iframe.contentDocument;
-           
+
+           // Fix animations for IOS<5.0
            if(Ext.os.is.iOS && !Ext.os.is.iOS5) {
                iframeDocument.open();
                iframeDocument.writeln('</body>');
                iframeDocument.close();
            }
-           
+
            this.testElement = testElement = iframeDocument.createElement('div');
            testElement.style.position = 'absolute !important';
            iframeDocument.body.appendChild(testElement);
