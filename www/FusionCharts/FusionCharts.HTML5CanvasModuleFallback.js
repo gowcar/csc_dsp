@@ -1,5 +1,0 @@
-/**
- * This is an addon module which will add method to determine whether
- * there is a need to fall back to older canvas or not
- */
-(function(){if(typeof FusionCharts!=='function'){throw Error("FusionCharts object not found");}var b=FusionCharts(['private','HighChartsCanvasFallBack']);if(b===undefined){return}var c=(function(){return document.implementation&&typeof document.implementation.hasFeature==='function'&&document.implementation.hasFeature("http://www.w3.org/TR/SVG11/feature#Shape","1.0")}());var d=(function(){/*@cc_on@*//*@if(@_jscript_version>=5.5)return true;@else@*/return false;/*@end@*/}());var e=(function(){return!!document.createElement('canvas').getContext}());b.core._useCanvasCompatibleJSChartModule=function(a){if(!(c||d)&&e){b.core.options.JSChartModuleFileName=a||'highcharts-1.2.5.js';return true}return false}}());
