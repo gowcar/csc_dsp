@@ -4,6 +4,7 @@ Ext.define('DataIntegration.model.Menu', {
     fields: [
         {name: 'text',        type: 'string'},
         {name: 'source',      type: 'string'},
+        {name: 'icon',      type: 'string'},
         {name: 'animation',   type: 'auto'},
         {name: 'preventHide', type: 'boolean'},
         {name: 'view',        type: 'string'}

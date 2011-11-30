@@ -1,3 +1,9 @@
+Ext.override(Ext.NestedList, {
+    getItemTextTpl: function(node) {
+        return '<div style="float:left;"><img src="{icon}" width="20" height="20"/></div><div style="float:left;padding-left:10px">{text}</div>';
+    }
+});
+
 Ext.define('DataIntegration.controller.Main', {
     extend: 'Ext.app.Controller',	
     config: {
@@ -109,7 +115,7 @@ Ext.define('DataIntegration.controller.Main', {
     	this.getMain();
     },
     authorize:function(){
-       if(Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue()==='admin' && Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue()==='admin'){
+//       if(Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue()==='admin' && Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue()==='admin'){
     	   this.getMain().removeAll(true);
 	 	   this.getMain().add([{
 	            id: 'launchscreen',
@@ -118,9 +124,11 @@ Ext.define('DataIntegration.controller.Main', {
 	        	}, {
 	             id: 'mainNestedList',
 	             xtype : 'nestedlist',
+	             componentCls   : 'leftmenu',
 	             useTitleAsBackText: false,
 	             docked: 'left',
 	             width : 250,
+	             useToolbar : false,
 	             store :  'Menus'
 	         }, {
 	             id: 'mainNavigationBar',
@@ -139,8 +147,8 @@ Ext.define('DataIntegration.controller.Main', {
 	      var navigation = this.getNavigation();
 	  	  navigation.setDetailContainer(this.getMain());
 	      this.getNavigation().addListener('leafitemtap', this.onLeafTap, this);
-       }else{
-    	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
-       }
+//       }else{
+//    	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
+//       }
     }
 });

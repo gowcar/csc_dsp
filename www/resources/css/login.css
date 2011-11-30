@@ -2,15 +2,56 @@
 	width: 1024px;
 	height:768px;
 	position: relative;
-	background-image: url("../img/login_bg.png");
+	background-image: url("../img/login_bg.jpg");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+.login-form .login-title{
+	width: 395px;
+	height:34px;
+	position:absolute;
+	left: 548px;
+	top:182px;
+	background-image: url("../img/login_title.png");
 	background-position: center;
 	background-repeat: no-repeat;
 }
 
+.login-form .login-input-text1{
+  float:left;
+  font-weight: bold;
+	position:absolute;
+	left: 558px;
+	top:282px;
+}
+
+.login-form .login-input-text2{
+  float:left;
+  font-weight: bold;
+	position:absolute;
+	letter-spacing: 17px;
+	left: 558px;
+	top:332px;
+}
+
+.login-form .login-input1{
+  float:left;
+	position:absolute;
+	left: 620px;
+	top:275px;
+}
+
+.login-form .login-input2{
+  float:left;
+	position:absolute;
+	left: 620px;
+	top:325px;
+}
+
 .login-form .login-username{
 	position:absolute;
-	left: 748px;
-	top:282px;
+	left: 630px;
+	top:280px;
 	height:26px;
 	width:170px;
 	background:transparent;
@@ -20,8 +61,8 @@
 
 .login-form .login-password{
 	position:absolute;
-	left: 748px;
-	top:342px;
+	left: 630px;
+	top:330px;
 	height:26px;
 	width:170px;
 	background:transparent;
