@@ -3,7 +3,7 @@ Ext.define('DataIntegration.controller.Main', {
     config: {
         profile: Ext.os.deviceType.toLowerCase()
     },
-    views: ['Viewport','CaigouJine','CommingSoon'],
+    views: ['Viewport','CaigouJine','CailiaoJiage','CGJE_Chart','CommingSoon'],
     stores: ['Menus'],
     refs: [
            {

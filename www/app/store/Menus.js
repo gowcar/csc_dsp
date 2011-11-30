@@ -15,11 +15,11 @@ Ext.define('DataIntegration.store.Menus', {
                 }, {
                 	text  : '材料价格',
                 	leaf  : true,
-                	view  : 'CommingSoon'
+                	view  : 'CailiaoJiage'
                 }, {
                 	text  : '供应商增长',
                 	leaf  : true,
-                	view  : 'CommingSoon'
+                	view  : 'CGJE_Chart'
                 }]
             }, {
                 text  : '平台运行',
