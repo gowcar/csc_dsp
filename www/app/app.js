@@ -29,6 +29,14 @@ Ext.setup({
 FusionCharts.setCurrentRenderer('javascript');
 
 function onBodyLoad() {
+  /*
+    document.addEventListener("deviceready", function(){
+        window.plugins.splashScreen.show();
+				dataIntegrationLauncher.mainLaunch();
+        window.plugins.splashScreen.hide();
+
+    }, false);
+	*/
 	document.addEventListener("deviceready", function(){dataIntegrationLauncher.mainLaunch();}, true);
 }
 

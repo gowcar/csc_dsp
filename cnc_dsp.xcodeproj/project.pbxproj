@@ -34,6 +34,8 @@
 		85BBB22A1483FDE00075FEB3 /* PhoneGap.plist in Resources */ = {isa = PBXBuildFile; fileRef = 85BBB2291483FDE00075FEB3 /* PhoneGap.plist */; };
 		85BBB22E1483FDE00075FEB3 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 85BBB22D1483FDE00075FEB3 /* AppDelegate.m */; };
 		85BBB2371483FE110075FEB3 /* www in Resources */ = {isa = PBXBuildFile; fileRef = 85BBB2361483FE110075FEB3 /* www */; };
+		85CFC32714868BCD003840E9 /* SplashScreen.m in Sources */ = {isa = PBXBuildFile; fileRef = 85CFC32614868BCD003840E9 /* SplashScreen.m */; };
+		85CFC32F148697C4003840E9 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 85CFC32E148697C4003840E9 /* Default-Landscape~ipad.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -69,6 +71,9 @@
 		85BBB22D1483FDE00075FEB3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = "<group>"; };
 		85BBB2301483FDE00075FEB3 /* README */ = {isa = PBXFileReference; lastKnownFileType = text; name = README; path = Plugins/README; sourceTree = "<group>"; };
 		85BBB2361483FE110075FEB3 /* www */ = {isa = PBXFileReference; lastKnownFileType = folder; path = www; sourceTree = "<group>"; };
+		85CFC32514868BCD003840E9 /* SplashScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SplashScreen.h; path = Plugins/SplashScreen.h; sourceTree = "<group>"; };
+		85CFC32614868BCD003840E9 /* SplashScreen.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SplashScreen.m; path = Plugins/SplashScreen.m; sourceTree = "<group>"; };
+		85CFC32E148697C4003840E9 /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +111,7 @@
 		85BBB1DB1483FDE00075FEB3 = {
 			isa = PBXGroup;
 			children = (
+				85CFC32E148697C4003840E9 /* Default-Landscape~ipad.png */,
 				85BBB2361483FE110075FEB3 /* www */,
 				85BBB2071483FDE00075FEB3 /* cnc_dsp */,
 				85BBB1EC1483FDE00075FEB3 /* Frameworks */,
@@ -224,6 +230,8 @@
 		85BBB22F1483FDE00075FEB3 /* Plugins */ = {
 			isa = PBXGroup;
 			children = (
+				85CFC32514868BCD003840E9 /* SplashScreen.h */,
+				85CFC32614868BCD003840E9 /* SplashScreen.m */,
 				85BBB2301483FDE00075FEB3 /* README */,
 			);
 			name = Plugins;
@@ -291,6 +299,7 @@
 				85BBB2281483FDE00075FEB3 /* Capture.bundle in Resources */,
 				85BBB22A1483FDE00075FEB3 /* PhoneGap.plist in Resources */,
 				85BBB2371483FE110075FEB3 /* www in Resources */,
+				85CFC32F148697C4003840E9 /* Default-Landscape~ipad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -319,6 +328,7 @@
 			files = (
 				85BBB20F1483FDE00075FEB3 /* main.m in Sources */,
 				85BBB22E1483FDE00075FEB3 /* AppDelegate.m in Sources */,
+				85CFC32714868BCD003840E9 /* SplashScreen.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +474,7 @@
 				85BBB2351483FDE00075FEB3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
