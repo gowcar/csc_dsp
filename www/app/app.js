@@ -2,16 +2,21 @@ var dataIntegrationLauncher = {
 		starting	: false,
 		started		: false,
 		mainLaunch	:function(){
+			/*
+			if(device){
+				window.plugins.splashScreen.show();
+			}
+			 */
 	    	if (/*device &&*/ dataIntegrationLauncher.starting && !dataIntegrationLauncher.started) { 
 	    		dataIntegrationLauncher.started = true;
 	    		console.log('app launch');
 		        Ext.Loader.setConfig ({enabled:true});
 		        new Ext.Application({
-		            //phoneStartupScreen: 'images/sencha_logo.png',
 		            name       : 'DataIntegration',
 		            // the controller will take care of creating the view        
 		            controllers: ['Main']
 		    	});
+		        window.plugins.splashScreen.hide();
 	    	}
 	    }
 };
@@ -29,14 +34,6 @@ Ext.setup({
 FusionCharts.setCurrentRenderer('javascript');
 
 function onBodyLoad() {
-  /*
-    document.addEventListener("deviceready", function(){
-        window.plugins.splashScreen.show();
-				dataIntegrationLauncher.mainLaunch();
-        window.plugins.splashScreen.hide();
-
-    }, false);
-	*/
 	document.addEventListener("deviceready", function(){dataIntegrationLauncher.mainLaunch();}, true);
 }
 
