@@ -16,7 +16,9 @@ var dataIntegrationLauncher = {
 		            // the controller will take care of creating the view        
 		            controllers: ['Main']
 		    	});
+		        /*
 		        window.plugins.splashScreen.hide();
+		         */
 	    	}
 	    }
 };
