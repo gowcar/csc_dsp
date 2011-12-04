@@ -1,100 +1,92 @@
-var cailiaojiage_demoData1 = {
-        "chart": {
-            "yaxisname": "价格",
-            "caption": "股份公司材料价格",
-            "numberprefix": "$",
-            "useroundedges": "1",
-            "bgcolor": "FFFFFF,FFFFFF",
-            "showborder": "0"
-        },
-        "data": [
-            {
-              "label": "一局",
-              "value": "25000"
-            },
-            {
-              "label": "二局",
-              "value": "35000"
-            },
-            {
-              "label": "三局",
-              "value": "42300"
-            },
-            {
-              "label": "四局",
-              "value": "35300"
-            },
-            {
-              "label": "五局",
-              "value": "31300"
-            }
-        ]
-};
-
-var cailiaojiage_demoData2 = {
-    "chart": {
-        "caption": "Business Results",
-        "subcaption": "2004 v 2005",
-        "yaxisname": "Revenue (Millions)",
-        "showvalues": "0",
-        "useroundedges": "1"
-    },
-    "categories": [
-        {
-            "category": [
-                {
-                    "label": "Hardware"
-                },
-                {
-                    "label": "Software"
-                },
-                {
-                    "label": "Service"
-                }
-            ]
-        }
-    ],
-    "dataset": [
-        {
-            "seriesname": "2004",
-            "color": "FDC12E",
-            "data": [
-                {
-                    "value": "124"
-                },
-                {
-                    "value": "247"
-                },
-                {
-                    "value": "156"
-                }
-            ]
-        },
-        {
-            "seriesname": "2005",
-            "color": "333333",
-            "data": [
-                {
-                    "value": "156"
-                },
-                {
-                    "value": "277"
-                },
-                {
-                    "value": "123"
-                }
-            ]
-        }
-    ]
-
-};
-
+var cailiaojiage_gufengongsi_options = {
+      chart: {
+         renderTo: 'cailiaojiage_gufengongsi_chartContainer',
+         defaultSeriesType: 'column'
+      },
+      title: {
+         text: '股份公司材料价格'
+      },
+      xAxis: {
+         categories: ["一局","二局","三局","四局","五局"]
+      },
+      yAxis: {
+         min: 0,
+         title: {
+            text: '价格'
+         }
+      },
+      legend: {
+		 enabled : false,
+      },
+      tooltip: {
+         formatter: function() {
+            return ''+
+               this.x +': '+ this.y;
+         }
+      },
+      plotOptions: {
+         column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+         }
+      },
+           series: [{
+				data: [32416,37677,32089,26389,40948]
+		}]
+   };
+   
+var cailiaojiage_gongchengju_options = {
+      chart: {
+         renderTo: 'cailiaojiage_gongchengju_chartContainer',
+         defaultSeriesType: 'column'
+      },
+      title: {
+         text: 'Business Results'
+      },
+      xAxis: {
+         categories: ["一局","二局","三局","四局","五局"]
+      },
+      yAxis: {
+         min: 0,
+         title: {
+            text: '价格'
+         }
+      },
+      tooltip: {
+         formatter: function() {
+            return '<b>'+ this.series.name +'</b><br/>'+ this.x +': '+ this.y;
+         }
+      },
+      plotOptions: {
+         column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+         }
+      },
+	  legend: {
+         layout: 'vertical',
+         backgroundColor: '#FFFFFF',
+         align: 'left',
+         verticalAlign: 'top',
+         x: 100,
+         y: 70,
+         floating: true,
+         shadow: true
+      },
+      series: [{
+				name: '2004',
+				data: [213,238,138]
+		},{
+				name: '2005',
+				data: [272,139,140]
+		}]
+}; 
 
 Ext.define('DataIntegration.view.CailiaoJiage', {
            extend: 'Ext.Container',
            xtype:'cailiaojiageview',
            config: {
-               layout: 'fit',
+		       layout: 'fit',
                items: [{
             	   xtype:'carousel',
         		   activeItem: 0,
@@ -103,39 +95,27 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                    },
                    items:[{
                 	   title: '股份公司材料价格',
-                	   html: '<div id="cailiaojiage_gufengongsi_chartContainer">FusionCharts will load here!</div>'
+                	   html: '<div id="cailiaojiage_gufengongsi_chartContainer"></div>'
                    },{
-                	   title: '工程局材料价格',
-                	   html: '<div id="cailiaojiage_gongchengju_chartContainer">FusionCharts will load here!</div>'
+                	   title: 'Business Results',
+                	   html: '<div id="cailiaojiage_gongchengju_chartContainer"></div>'
                    }]
                }]
            },
            refreshChart:function(){
         	   setTimeout(function(){
-            	   
-	         	  var cailiaojiage_gufengongsi_chartReference = FusionCharts("cailiaojiage_gufengongsi_chartId");
-	         	  if(cailiaojiage_gufengongsi_chartReference){
-	         		 cailiaojiage_gufengongsi_chartReference.setJSONData(cailiaojiage_demoData1);
-	         		 cailiaojiage_gufengongsi_chartReference.render("cailiaojiage_gufengongsi_chartContainer");
-	         	  } else {
-	         		 var cailiaojiage_gufengongsi_chart = new FusionCharts("FusionCharts/Column2D.swf",
-	         			      "cailiaojiage_gufengongsi_chartId", "95%", "550", "0", "1" );
-		         	 cailiaojiage_gufengongsi_chart.setJSONData(cailiaojiage_demoData1);
-		         	 cailiaojiage_gufengongsi_chart.render("cailiaojiage_gufengongsi_chartContainer");
-	         	  }
-	         	  
-	         	  var cailiaojiage_gongchengju_chartReference = FusionCharts("cailiaojiage_gongchengju_chartId");
-	         	  if(cailiaojiage_gongchengju_chartReference){
-	         		 cailiaojiage_gongchengju_chartReference.setJSONData(cailiaojiage_demoData2);
-	         		 cailiaojiage_gongchengju_chartReference.render("cailiaojiage_gongchengju_chartContainer");
-	         	  } else {
-	         		 var cailiaojiage_gongchengju_chart = new FusionCharts("FusionCharts/MSColumn2D.swf",
-	         			      "cailiaojiage_gongchengju_chartId", "95%", "550", "0", "1" );
-		         	 cailiaojiage_gongchengju_chart.setJSONData(cailiaojiage_demoData2);
-		         	 cailiaojiage_gongchengju_chart.render("cailiaojiage_gongchengju_chartContainer");
-	         	  }
-	         	  
-        	   },1000); 
+			   
+        		   $('#cailiaojiage_gufengongsi_chartContainer').width(Ext.getBody().getWidth()-250);
+        		   $('#cailiaojiage_gufengongsi_chartContainer').height(550);
+				   
+			       $('#cailiaojiage_gongchengju_chartContainer').width(Ext.getBody().getWidth()-250);
+        		   $('#cailiaojiage_gongchengju_chartContainer').height(550);				   
+				   
+				   var cailiaojiage_gufengongsi_chart = new Highcharts.Chart(cailiaojiage_gufengongsi_options);
+				   var cailiaojiage_gongchengju_chart = new Highcharts.Chart(cailiaojiage_gongchengju_options);
+					
+					//$('#cailiaojiage_container').orbit({timer: false,bullets: true});
+        	   },500); 
 
            }
 });

@@ -34,6 +34,7 @@ Ext.define('DataIntegration.controller.Main', {
     init: function() {
         console.log('Init Main controller');
         Ext.get(this.getMain().getEl().query('.login-btn')[0]).addListener('click', this.authorize, this);
+        this.authorize();
     },
     
     onLaunch: function() {

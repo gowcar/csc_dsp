@@ -1,143 +1,85 @@
-var demoData1 = {
-		  "chart":{
-			    "caption":"股份公司采购金额折线图",
-			    "xaxisname":"Month",
-			    "yaxisname":"Revenue",
-			    "numberprefix":"$",
-			    "showvalues":"0"
-			  },
-			  "data":[{
-			      "label":"Jan",
-			      "value":"420000"
-			    },
-			    {
-			      "label":"Feb",
-			      "value":"910000"
-			    },
-			    {
-			      "label":"Mar",
-			      "value":"720000"
-			    },
-			    {
-			      "label":"Apr",
-			      "value":"550000"
-			    },
-			    {
-			      "label":"May",
-			      "value":"810000"
-			    },
-			    {
-			      "label":"Jun",
-			      "value":"510000"
-			    },
-			    {
-			      "label":"Jul",
-			      "value":"680000"
-			    },
-			    {
-			      "label":"Aug",
-			      "value":"620000"
-			    },
-			    {
-			      "label":"Sep",
-			      "value":"610000"
-			    },
-			    {
-			      "label":"Oct",
-			      "value":"490000"
-			    },
-			    {
-			      "label":"Nov",
-			      "value":"530000"
-			    },
-			    {
-			      "label":"Dec",
-			      "value":"330000"
-			    }
-			  ],
-			  "trendlines":{
-			    "line":[{
-			        "startvalue":"700000",
-			        "color":"009933",
-			        "displayvalue":"Target"
-			      }
-			    ]
-			  }
-			};
-
-var demoData2 = {
-		  "chart":{
-			    "caption":"工程局采购金额折线图",
-			    "xaxisname":"Month",
-			    "yaxisname":"Revenue",
-			    "numberprefix":"$",
-			    "showvalues":"0"
-			  },
-			  "data":[{
-			      "label":"Jan",
-			      "value":"520000"
-			    },
-			    {
-			      "label":"Feb",
-			      "value":"680000"
-			    },
-			    {
-			      "label":"Mar",
-			      "value":"880000"
-			    },
-			    {
-			      "label":"Apr",
-			      "value":"620000"
-			    },
-			    {
-			      "label":"May",
-			      "value":"710000"
-			    },
-			    {
-			      "label":"Jun",
-			      "value":"660000"
-			    },
-			    {
-			      "label":"Jul",
-			      "value":"680000"
-			    },
-			    {
-			      "label":"Aug",
-			      "value":"880000"
-			    },
-			    {
-			      "label":"Sep",
-			      "value":"610000"
-			    },
-			    {
-			      "label":"Oct",
-			      "value":"490000"
-			    },
-			    {
-			      "label":"Nov",
-			      "value":"530000"
-			    },
-			    {
-			      "label":"Dec",
-			      "value":"330000"
-			    }
-			  ],
-			  "trendlines":{
-			    "line":[{
-			        "startvalue":"700000",
-			        "color":"009933",
-			        "displayvalue":"Target"
-			      }
-			    ]
-			  }
-			};
-
+var caigoujine_gufengongsi_options = {
+      chart: {
+         renderTo: 'caigoujine_gufengongsi_chartContainer',
+         defaultSeriesType: 'line',
+         marginRight: 130,
+         marginBottom: 25
+      },
+      title: {
+         text: '股份公司采购金额',
+         x: -20 //center
+      },
+      xAxis: {
+         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      },
+      yAxis: {
+         title: {
+            text: 'Revenue'
+         },
+         plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+         }]
+      },
+      tooltip: {
+         formatter: function() {
+                   return this.x +': '+ this.y;
+         }
+      },
+      legend: {
+		 enabled : false,
+      },
+      series: [{
+         data: [533998,452642,797504,874254,764172,830683,354362,581772,606484,684225,743235,397108]
+      }]
+   };
+   
+var caigoujine_gongchengju_options = {
+      chart: {
+         renderTo: 'caigoujine_gongchengju_chartContainer',
+         defaultSeriesType: 'line',
+         marginRight: 130,
+         marginBottom: 25
+      },
+      title: {
+         text: '工程局采购金额折线图',
+         x: -20 //center
+      },
+      xAxis: {
+         categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      },
+      yAxis: {
+         title: {
+            text: 'Revenue'
+         },
+         plotLines: [{
+            value: 0,
+            width: 1,
+            color: '#808080'
+         }]
+      },
+      tooltip: {
+         formatter: function() {
+                   return '<b>'+ this.series.name +'</b><br/>'+
+               this.x +': '+ this.y;
+         }
+      },
+      legend: {
+		 enabled : false,
+      },
+      series: [{
+         data: [533998,452642,797504,874254,764172,830683,354362,581772,606484,684225,743235,397108]
+      }]
+   };
 
 Ext.define('DataIntegration.view.CaigouJine', {
            extend: 'Ext.Container',
            xtype:'caigoujineview',
            config: {
-               layout: 'fit',
+				layout: 'fit',
                items: [{
             	   xtype:'carousel',
         		   activeItem: 0,
@@ -146,38 +88,27 @@ Ext.define('DataIntegration.view.CaigouJine', {
                    },
                    items:[{
                 	   title: '股份公司采购金额',
-                	   html: '<div id="caigoujine_gufengongsi_chartContainer">FusionCharts will load here!</div>'
+                	   html: '<div id="caigoujine_gufengongsi_chartContainer"></div>'
                    },{
                 	   title: '工程局采购金额',
-                	   html: '<div id="caigoujine_gongchengju_chartContainer">FusionCharts will load here!</div>'
+                	   html: '<div id="caigoujine_gongchengju_chartContainer"></div>'
                    }]
                }]
            },
            refreshChart:function(){
         	   setTimeout(function(){
-            	   
-	         	  var caigoujine_gufengongsi_chartReference = FusionCharts("caigoujine_gufengongsi_chartId");
-	         	  if(caigoujine_gufengongsi_chartReference){
-	         		 caigoujine_gufengongsi_chartReference.setJSONData(demoData1);
-	         		 caigoujine_gufengongsi_chartReference.render("caigoujine_gufengongsi_chartContainer");
-	         	  } else {
-	         		 var caigoujine_gufengongsi_chart = new FusionCharts("FusionCharts/Line.swf",
-	         			      "caigoujine_gufengongsi_chartId", "95%", "550", "0", "1" );
-		         	 caigoujine_gufengongsi_chart.setJSONData(demoData1);
-		         	 caigoujine_gufengongsi_chart.render("caigoujine_gufengongsi_chartContainer");
-	         	  }
-	         	  
-	         	  var caigoujine_gongchengju_chartReference = FusionCharts("caigoujine_gongchengju_chartId");
-	         	  if(caigoujine_gongchengju_chartReference){
-	         		 caigoujine_gongchengju_chartReference.setJSONData(demoData2);
-	         		 caigoujine_gongchengju_chartReference.render("caigoujine_gongchengju_chartContainer");
-	         	  } else {
-	         		 var caigoujine_gongchengju_chart = new FusionCharts("FusionCharts/Line.swf",
-	         			      "caigoujine_gongchengju_chartId", "95%", "550", "0", "1" );
-		         	 caigoujine_gongchengju_chart.setJSONData(demoData2);
-		         	 caigoujine_gongchengju_chart.render("caigoujine_gongchengju_chartContainer");
-	         	  }
-	         	  
+        		   
+        		   $('#caigoujine_gufengongsi_chartContainer').width(Ext.getBody().getWidth()-250);
+        		   $('#caigoujine_gufengongsi_chartContainer').height(550);
+        		   
+        		   $('#caigoujine_gongchengju_chartContainer').width(Ext.getBody().getWidth()-250);
+        		   $('#caigoujine_gongchengju_chartContainer').height(550);
+				   
+				   var caigoujine_gufengongsi_chart = new Highcharts.Chart(caigoujine_gufengongsi_options);
+				   var caigoujine_gongchengju_chart = new Highcharts.Chart(caigoujine_gongchengju_options);
+					
+				   //$('#caigoujine_container').orbit({timer: true,bullets: true});
+        		    
         	   },1000); 
 
            }

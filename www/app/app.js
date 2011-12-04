@@ -33,7 +33,7 @@ Ext.setup({
     }
 });
 
-FusionCharts.setCurrentRenderer('javascript');
+//FusionCharts.setCurrentRenderer('javascript');
 
 function onBodyLoad() {
 	document.addEventListener("deviceready", function(){dataIntegrationLauncher.mainLaunch();}, true);
