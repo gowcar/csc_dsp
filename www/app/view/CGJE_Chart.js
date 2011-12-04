@@ -1,49 +1,82 @@
 var CGJE_Chart1_options = {
       chart: {
-         renderTo: 'CGJE_Chart_chartContainer1',
-         defaultSeriesType: 'column'
+         renderTo: 'CGJE_Chart_chartContainer1'
       },
       title: {
          text: '中建股份采购金额年度报表'
       },
-      xAxis: {
+      xAxis: [{
          categories: ["一月","二月","三月","四月","五月","六月","七月","八月","九月","十月"]
-      },
-      yAxis: {
-         min: 0,
+      }],
+      yAxis: [ { // Secondary yAxis
+         gridLineWidth: 0,
          title: {
-            text: 'Amount'
+            text: 'Amount',
+            style: {
+               color: '#4572A7'
+            }
+         },
+         labels: {
+            formatter: function() {
+               return this.value +'元';
+            },
+            style: {
+               color: '#4572A7'
+            }
          }
-      },
+         
+      },{ // Primary yAxis
+         labels: {
+            formatter: function() {
+               return this.value;
+            },
+            style: {
+               color: '#89A54E'
+            }
+         },
+         title: {
+            text: 'Quantity',
+            style: {
+               color: '#89A54E'
+            }
+         },
+         opposite: true
+      }],
       tooltip: {
          formatter: function() {
-            return '<b>'+ this.series.name +'</b><br/>'+ this.x +': '+ this.y;
+            var unit = {
+               '预算金额': '元',
+               '实际采购': ''
+            }[this.series.name];
+            
+            return ''+
+               this.x +': '+ this.y　+　unit;
          }
       },
-      plotOptions: {
-         column: {
-            pointPadding: 0.2,
-            borderWidth: 0
-         }
-      },
-	  legend: {
+      legend: {
          layout: 'vertical',
-         backgroundColor: '#FFFFFF',
          align: 'left',
+         x: 120,
          verticalAlign: 'top',
-         x: 100,
-         y: 70,
+         y: 80,
          floating: true,
-         shadow: true
+         backgroundColor: '#FFFFFF'
       },
       series: [{
-				name: '预算金额',
-				data: [134,240,275,152,267,192,134,133,246,162]
-		},{
-				name: '实际采购',
-				data: [263,267,132,190,128,177,197,216,216,247]
-		}]
-};
+         name: '预算金额',
+         color: '#4572A7',
+         type: 'column',
+         yAxis: 0,
+         data: [49.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1]      
+      
+      }, {
+         name: '实际采购',
+         color: '#89A54E',
+         type: 'spline',
+		 yAxis: 1,
+         data: [7.0, 6.9, 9.5, 14.5, 18.2, 21.5, 25.2, 26.5, 23.3, 18.3]
+      }]
+   }
 
 
 var CGJE_Chart2_options = {
