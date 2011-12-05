@@ -9,7 +9,7 @@ Ext.define('DataIntegration.controller.Main', {
     config: {
         profile: Ext.os.deviceType.toLowerCase()
     },
-    views: ['Viewport','CaigouJine','CailiaoJiage','CGJE_Chart','CommingSoon'],
+    views: ['Viewport','CailiaoJiage','CGJE_Chart','GYS_Chart','PTYX_Chart', 'SCQS_Chart'],
     stores: ['Menus'],
     refs: [
            {
@@ -108,7 +108,7 @@ Ext.define('DataIntegration.controller.Main', {
             card.setProfile(profile);
         }
         if (card.refreshChart){
-        	card.refreshChart();
+        	card.refreshChart(this.getToolbar().getHeight());
         }
     },
     updateProfile: function(profile) {
@@ -130,7 +130,8 @@ Ext.define('DataIntegration.controller.Main', {
 	             docked: 'left',
 	             width : 250,
 	             useToolbar : false,
-	             store :  'Menus'
+	             store :  'Menus',
+		     title: '图表类别'
 	         }, {
 	             id: 'mainNavigationBar',
 	             xtype : 'navigationbar',

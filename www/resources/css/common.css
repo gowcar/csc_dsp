@@ -11,3 +11,22 @@
 	color: #8d8d8d;
 	padding-top: 20px;
 }
+
+.x-carousel-indicator-dark span {
+	background-color: rgba(0, 0, 0, 0.3);
+	background-image: none;
+}
+
+.x-carousel-indicator span {
+	display: block;
+	width: 0.8em;
+	height: 0.8em;
+	-webkit-border-radius: 0.4em;
+	border-radius: 0.4em;
+	margin: 0.4em;
+}
+
+.x-carousel-indicator-dark span.x-carousel-indicator-active {
+	background-color: rgba(0, 0, 0, 0.9);
+	background-image: none;
+}
