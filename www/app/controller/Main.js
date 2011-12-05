@@ -34,7 +34,6 @@ Ext.define('DataIntegration.controller.Main', {
     init: function() {
         console.log('Init Main controller');
         Ext.get(this.getMain().getEl().query('.login-btn')[0]).addListener('click', this.authorize, this);
-        this.authorize();
     },
     
     onLaunch: function() {
@@ -116,7 +115,7 @@ Ext.define('DataIntegration.controller.Main', {
     	this.getMain();
     },
     authorize:function(){
-//       if(Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue()==='admin' && Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue()==='admin'){
+       if(Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue()==='admin' && Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue()==='admin'){
     	   this.getMain().removeAll(true);
 	 	   this.getMain().add([{
 	            id: 'launchscreen',
@@ -149,8 +148,8 @@ Ext.define('DataIntegration.controller.Main', {
 	      var navigation = this.getNavigation();
 	  	  navigation.setDetailContainer(this.getMain());
 	      this.getNavigation().addListener('leafitemtap', this.onLeafTap, this);
-//       }else{
-//    	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
-//       }
+       }else{
+    	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
+       }
     }
 });

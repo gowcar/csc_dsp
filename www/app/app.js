@@ -2,11 +2,9 @@ var dataIntegrationLauncher = {
 		starting	: false,
 		started		: false,
 		mainLaunch	:function(){
-			/*
-			if(device){
-				window.plugins.splashScreen.show();
-			}
-			 */
+//			if(device){
+//				window.plugins.splashScreen.show();
+//			}
 	    	if (/*device &&*/ dataIntegrationLauncher.starting && !dataIntegrationLauncher.started) { 
 	    		dataIntegrationLauncher.started = true;
 	    		console.log('app launch');
@@ -16,9 +14,7 @@ var dataIntegrationLauncher = {
 		            // the controller will take care of creating the view        
 		            controllers: ['Main']
 		    	});
-		        /*
-		        window.plugins.splashScreen.hide();
-		         */
+//		        window.plugins.splashScreen.hide();
 	    	}
 	    }
 };
@@ -32,8 +28,6 @@ Ext.setup({
     	dataIntegrationLauncher.mainLaunch();
     }
 });
-
-//FusionCharts.setCurrentRenderer('javascript');
 
 function onBodyLoad() {
 	document.addEventListener("deviceready", function(){dataIntegrationLauncher.mainLaunch();}, true);
