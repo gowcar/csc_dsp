@@ -120,7 +120,8 @@ Ext.define('DataIntegration.controller.Main', {
 	 	   this.getMain().add([{
 	            id: 'launchscreen',
 	            cls : 'launchscreen',
-	            html: '<div style="text-align:center;"></div>'
+		    layout:'fit',
+	            html: '<center><div></div></center>'
 	        	}, {
 	             id: 'mainNestedList',
 	             xtype : 'nestedlist',
