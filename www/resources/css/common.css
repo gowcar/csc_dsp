@@ -30,3 +30,21 @@
 	background-color: rgba(0, 0, 0, 0.9);
 	background-image: none;
 }
+
+#launchscreen .x-inner .x-innerhtml div{
+	background-image: url('../img/splash.png');
+	width:599px;
+	height:603px;
+}
+
+.card {
+	background-image: url('../img/panel_bg.png');
+}
+
+.x-carousel x-carousel-inner{
+	background-image: url('../img/panel_bg.png');
+}
+
+#mainNestedList .x-list{
+	background-image: url('../img/list_bg.png');
+}

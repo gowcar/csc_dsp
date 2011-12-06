@@ -8,7 +8,7 @@ Ext.define('DataIntegration.view.Viewport', {
                    animation: {
                        type: 'slide',
                        direction: 'left',
-                       duration: 250
+                       duration: 500
                    }
                },
                items: [{

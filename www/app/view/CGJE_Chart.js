@@ -113,7 +113,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
 		       layout: 'fit',
                items: [{
             	   xtype:'carousel',
-        		   activeItem: 0,
+        	   activeItem: 0,
                    defaults: {
                        cls: 'card'
                    },
