@@ -4,6 +4,11 @@ Ext.override(Ext.NestedList, {
     }
 });
 
+Ext.define('User', {
+    extend: 'Ext.data.Model',
+    fields: ['result', 'username', 'orgname']
+});
+
 Ext.define('DataIntegration.controller.Main', {
     extend: 'Ext.app.Controller',	
     config: {
@@ -114,15 +119,15 @@ Ext.define('DataIntegration.controller.Main', {
     	console.log('updateProfile Main Controller');
     	this.getMain();
     },
-    authorize:function(){
-       if(Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue()==='admin' && Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue()==='admin'){
-    	   this.getMain().removeAll(true);
-	 	   this.getMain().add([{
-	            id: 'launchscreen',
-	            cls : 'launchscreen',
-		    layout:'fit',
-	            html: '<center><div></div></center>'
-	        	}, {
+    processAuthorizeResult: function(authorizeResult){
+         if(authorizeResult === 'success'){
+    	    this.getMain().removeAll(true);
+	 	    this.getMain().add([{
+	             id: 'launchscreen',
+	             cls : 'launchscreen',
+                 layout:'fit',
+	             html: '<center><div></div></center>'
+             }, {
 	             id: 'mainNestedList',
 	             xtype : 'nestedlist',
 	             componentCls   : 'leftmenu',
@@ -131,26 +136,58 @@ Ext.define('DataIntegration.controller.Main', {
 	             width : 250,
 	             useToolbar : false,
 	             store :  'Menus',
-		     title: '图表类别'
-	         }, {
-	             id: 'mainNavigationBar',
-	             xtype : 'navigationbar',
-	             docked: 'top',
-	             title : '中建四局服务平台数据平台'
-	         }]);
-	      this.addRef({
-	          ref       : 'navigation',
-	          selector  : '#mainNestedList'
-	      });
-	      this.addRef({
-	          ref       : 'toolbar',
-	          selector  : '#mainNavigationBar'
-	      });
-	      var navigation = this.getNavigation();
-	  	  navigation.setDetailContainer(this.getMain());
-	      this.getNavigation().addListener('leafitemtap', this.onLeafTap, this);
-       }else{
-    	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
-       }
+                 title: '图表类别'
+             }, {
+                     id: 'mainNavigationBar',
+                     xtype : 'navigationbar',
+                     docked: 'top',
+                     title : '中建四局服务平台数据平台'
+             }]);
+             this.addRef({
+                 ref       : 'navigation',
+                 selector  : '#mainNestedList'
+             });
+             this.addRef({
+                 ref       : 'toolbar',
+                 selector  : '#mainNavigationBar'
+             });
+             var navigation = this.getNavigation();
+             navigation.setDetailContainer(this.getMain());
+             this.getNavigation().addListener('leafitemtap', this.onLeafTap, this);
+         }else{
+      	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
+         }
+    },
+    authorize:function(){
+        var username = Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue();
+        var passwd = Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue();
+
+        if(username === 'admin' && passwd === 'admin'){
+            this.processAuthorizeResult('success');
+        }else{
+            this.processAuthorizeResult('failure');
+        }
+
+        /*
+        var store = Ext.create('Ext.data.Store', {
+            proxy: {
+                type: 'soap',
+                methodName: 'userLogin',
+                params : {
+                    arg0:['<xml><loginname>', username, '</loginname><password>', passwd, '</password></xml>'].join('')
+                },
+                url : 'http://jc.glodon.com:9000/webservice/graphService',
+                reader: {
+                    model: 'User',
+                    type: 'soap'
+                }
+            }
+        });
+        var me = this;
+        store.addListener('load', function(ds, records) {
+            me.processAuthorizeResult(records[0].data.result);
+        });
+        store.load();
+        */
     }
 });
