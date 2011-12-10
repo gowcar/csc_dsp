@@ -1,8 +1,8 @@
 //
 //  main.m
-//  cnc_dsp
+//  cscdsp
 //
-//  Created by Jacky Zhang on 11-11-29.
+//  Created by Jacky Zhang on 11-12-6.
 //  Copyright __MyCompanyName__ 2011年. All rights reserved.
 //
 

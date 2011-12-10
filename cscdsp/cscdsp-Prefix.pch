@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'cnc_dsp' target in the 'cnc_dsp' project
+// Prefix header for all source files of the 'cscdsp' target in the 'cscdsp' project
 //
 
 #ifdef __OBJC__
