@@ -1,8 +1,8 @@
 //
 //  AppDelegate.m
-//  cnc_dsp
+//  cscdsp
 //
-//  Created by Jacky Zhang on 11-11-29.
+//  Created by Jacky Zhang on 11-12-6.
 //  Copyright __MyCompanyName__ 2011年. All rights reserved.
 //
 
@@ -36,14 +36,14 @@
 	{
 		NSURL *url = [launchOptions objectForKey:[keyArray objectAtIndex:0]];
 		self.invokeString = [url absoluteString];
-		NSLog(@"cnc_dsp launchOptions = %@",url);
+		NSLog(@"cscdsp launchOptions = %@",url);
 	}
 	
 	return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 // this happens while we are running ( in the background, or from within our own app )
-// only valid if cnc_dsp.plist specifies a protocol to handle
+// only valid if cscdsp.plist specifies a protocol to handle
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url 
 {
     // must call super so all plugins will get the notification, and their handlers will be called 
@@ -64,7 +64,7 @@
  */
 - (void)webViewDidFinishLoad:(UIWebView *)theWebView 
 {
-	// only valid if cnc_dsp.plist specifies a protocol to handle
+	// only valid if cscdsp.plist specifies a protocol to handle
 	if(self.invokeString)
 	{
 		// this is passed before the deviceready event is fired, so you can access it in js when you receive deviceready
