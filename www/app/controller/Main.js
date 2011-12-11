@@ -119,8 +119,8 @@ Ext.define('DataIntegration.controller.Main', {
     	console.log('updateProfile Main Controller');
     	this.getMain();
     },
-    processAuthorizeResult: function(authorizeResult){
-         if(authorizeResult === 'success'){
+    processAuthorizeResult: function(datas){
+         if(datas[0].result === 'success'){
     	    this.getMain().removeAll(true);
 	 	    this.getMain().add([{
 	             id: 'launchscreen',
@@ -155,39 +155,27 @@ Ext.define('DataIntegration.controller.Main', {
              navigation.setDetailContainer(this.getMain());
              this.getNavigation().addListener('leafitemtap', this.onLeafTap, this);
          }else{
-      	   Ext.Msg.alert('用户名或密码错误', '提示：你可以使用admin/admin登入系统', Ext.emptyFn);
+      	   Ext.Msg.alert('错误', '您输入的用户名不存在或密码错误', Ext.emptyFn);
          }
     },
     authorize:function(){
         var username = Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue();
         var passwd = Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue();
 
+        /*
         if(username === 'admin' && passwd === 'admin'){
             this.processAuthorizeResult('success');
         }else{
             this.processAuthorizeResult('failure');
         }
-
-        /*
-        var store = Ext.create('Ext.data.Store', {
-            proxy: {
-                type: 'soap',
-                methodName: 'userLogin',
-                params : {
-                    arg0:['<xml><loginname>', username, '</loginname><password>', passwd, '</password></xml>'].join('')
-                },
-                url : 'http://jc.glodon.com:9000/webservice/graphService',
-                reader: {
-                    model: 'User',
-                    type: 'soap'
-                }
-            }
-        });
-        var me = this;
-        store.addListener('load', function(ds, records) {
-            me.processAuthorizeResult(records[0].data.result);
-        });
-        store.load();
         */
+
+        Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!userLoginJson.do',
+            params:{"graphVO.loginname":username,"graphVO.password":passwd},
+            callbackKey:'jsonpcallback',
+            callback:this.processAuthorizeResult,
+            scope:this
+        });
     }
 });
