@@ -48,3 +48,19 @@
 #mainNestedList .x-list{
 	background-image: url('../img/list_bg.png');
 }
+
+.toolbar_label .x-innerhtml {
+    padding-left:10px; 
+    color:white;
+    font-size: 18px;
+}
+
+.x-toolbar .toolbar_select{
+	width: 8em;
+}
+
+.x-toolbar .x-field-select .x-input-text {
+    color: white;
+    padding: 0em 0.9em;
+}
+

@@ -34,15 +34,123 @@ Ext.define('DataIntegration.controller.Main', {
            {
         	   ref       : 'password',
         	   selector  : '#password'
+           },
+           {
+        	   ref       : 'CGJGQS_orgcode',
+        	   selector  : '#CGJGQS_orgcode'
+           },
+           {
+        	   ref       : 'CGJGQS_yearcode',
+        	   selector  : '#CGJGQS_yearcode'
+           },
+           {
+        	   ref       : 'CGJGQS_materialclasscode',
+        	   selector  : '#CGJGQS_materialclasscode'
+           },
+           {
+        	   ref       : 'CGZJEZB_orgcode',
+        	   selector  : '#CGZJEZB_orgcode'
+           },
+           {
+        	   ref       : 'CGZJEZB_yearcode',
+        	   selector  : '#CGZJEZB_yearcode'
+           },
+           {
+        	   ref       : 'CGZJEQS_orgcode',
+        	   selector  : '#CGZJEQS_orgcode'
+           },
+           {
+        	   ref       : 'CGZJEQS_yearcode',
+        	   selector  : '#CGZJEQS_yearcode'
            }
     ],
     init: function() {
         console.log('Init Main controller');
         Ext.get(this.getMain().getEl().query('.login-btn')[0]).addListener('click', this.authorize, this);
+        //this.authorize();
+        this.control({
+	        '#CGJGQS_action' : {
+	                tap: this.onCGJGQSButtonTap
+	        },
+	        '#CGZJEZB_action' : {
+	                tap: this.onCGZJEZBButtonTap
+	        },
+	        '#CGZJEQS_action' : {
+	                tap: this.onCGZJEQSButtonTap
+	        }
+	    });
     },
     
     onLaunch: function() {
 		console.log('onLaunch Main controller');
+    },
+    
+    onCGJGQSButtonTap: function(){
+    	var CGJGQS_orgcode = this.getCGJGQS_orgcode().getValue();
+    	var CGJGQS_yearcode = this.getCGJGQS_yearcode().getValue();
+    	var CGJGQS_materialclass = this.getCGJGQS_materialclasscode().record.data.text;
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearEBillDetailJson.do',
+            params:{"graphVO.orgcode":CGJGQS_orgcode,"graphVO.year":CGJGQS_yearcode,"graphVO.materialdesc":CGJGQS_materialclass},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGJGQS_Chart_options.title.text = '材料采购价格趋势图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
+            	CGJGQS_Chart_options.xAxis[0].categories.length = 0;
+            	CGJGQS_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGJGQS_Chart_options.xAxis[0].categories.push(data.year + '-' + data.month);
+            		CGJGQS_Chart_options.series[0].data.push(parseFloat(data.result));
+            	}
+            	var CGJGQS_Chart = new Highcharts.Chart(CGJGQS_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },
+    
+    onCGZJEZBButtonTap: function(){
+    	var CGZJEZB_orgcode = this.getCGZJEZB_orgcode().getValue();
+    	var CGZJEZB_yearcode = this.getCGZJEZB_yearcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
+            params:{"graphVO.orgcode":CGZJEZB_orgcode,"graphVO.year":CGZJEZB_yearcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEZB_Chart_options.title.text = this.getCGZJEZB_orgcode().record.data.text + '全年度采购占比图(' + CGZJEZB_yearcode + '年度)';
+            	CGZJEZB_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEZB_Chart_options.series[0].data.push([data.orgName, parseFloat(data.value)]);
+            	}
+            	var CGZJEZB_Chart = new Highcharts.Chart(CGZJEZB_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },
+    
+    onCGZJEQSButtonTap: function(){
+    	var CGZJEQS_orgcode = this.getCGZJEQS_orgcode().getValue();
+    	var CGZJEQS_yearcode = this.getCGZJEQS_yearcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
+            params:{"graphVO.orgcode":CGZJEQS_orgcode,"graphVO.year":CGZJEQS_yearcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEQS_Chart_options.title.text = '采购总金额趋势图(' + this.getCGZJEQS_orgcode().record.data.text + '-' + CGZJEQS_yearcode + '年度)';
+            	CGZJEQS_Chart_options.xAxis.categories.length = 0;
+            	CGZJEQS_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEQS_Chart_options.xAxis.categories.push(data.orgName);
+            		CGZJEQS_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var CGZJEQS_Chart = new Highcharts.Chart(CGZJEQS_Chart_options);
+            },
+            scope:this
+        });
+    	
     },
     
     onLeafTap: function(list, index) {
@@ -161,15 +269,11 @@ Ext.define('DataIntegration.controller.Main', {
     authorize:function(){
         var username = Ext.get(this.getMain().getEl().query('.login-username')[0]).getValue();
         var passwd = Ext.get(this.getMain().getEl().query('.login-password')[0]).getValue();
-
         /*
-        if(username === 'admin' && passwd === 'admin'){
-            this.processAuthorizeResult('success');
-        }else{
-            this.processAuthorizeResult('failure');
-        }
+         	var fakeResult = [];
+        	fakeResult.push({result:'success'});
+        	this.processAuthorizeResult(fakeResult);
         */
-
         Ext.util.JSONP.request({
             url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!userLoginJson.do',
             params:{"graphVO.loginname":username,"graphVO.password":passwd},

@@ -1,3 +1,5 @@
+var dspApp = null;
+
 var dataIntegrationLauncher = {
 		starting	: false,
 		started		: false,
@@ -9,7 +11,7 @@ var dataIntegrationLauncher = {
 	    		dataIntegrationLauncher.started = true;
 	    		console.log('app launch');
 		        Ext.Loader.setConfig ({enabled:true});
-		        new Ext.Application({
+		        dspApp = new Ext.Application({
 		            name       : 'DataIntegration',
 		            // the controller will take care of creating the view        
 		            controllers: ['Main']
