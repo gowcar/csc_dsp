@@ -4,7 +4,7 @@ var dataIntegrationLauncher = {
 		starting	: false,
 		started		: false,
 		mainLaunch	:function(){
-			if(device){
+			if(typeof(device) !== 'undefined' && device){
 				window.plugins.splashScreen.show();
 			}
 	    	if (/*device &&*/ dataIntegrationLauncher.starting && !dataIntegrationLauncher.started) { 
@@ -16,7 +16,9 @@ var dataIntegrationLauncher = {
 		            // the controller will take care of creating the view        
 		            controllers: ['Main']
 		    	});
-		        window.plugins.splashScreen.hide();
+                if(typeof(device) !== 'undefined' && device){
+                    window.plugins.splashScreen.hide();
+                }
 	    	}
 	    }
 };
