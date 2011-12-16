@@ -182,7 +182,7 @@ Ext.define('DataIntegration.controller.Main', {
             params:{"graphVO.orgcode":CGZJEYDQS_orgcode},
             callbackKey:'jsonpcallback',
             callback:function(datas){
-            	CGZJEYDQS_Chart_options.title.text = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额年度趋势图';
+            	CGZJEYDQS_Chart_options.title.text = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额月度趋势图';
             	CGZJEYDQS_Chart_options.xAxis[0].categories.length = 0;
             	CGZJEYDQS_Chart_options.series[0].data.length = 0;
             	for(var idx in datas){
