@@ -4,11 +4,6 @@ Ext.override(Ext.NestedList, {
     }
 });
 
-Ext.define('User', {
-    extend: 'Ext.data.Model',
-    fields: ['result', 'username', 'orgname']
-});
-
 Ext.define('DataIntegration.controller.Main', {
     extend: 'Ext.app.Controller',	
     config: {
@@ -78,6 +73,18 @@ Ext.define('DataIntegration.controller.Main', {
            {
         	   ref       : 'CGZJEJDQS_endyearcode',
         	   selector  : '#CGZJEJDQS_endyearcode'
+           },
+           {
+        	   ref       : 'CLSLZB_orgcode',
+        	   selector  : '#CLSLZB_orgcode'
+           },
+           {
+        	   ref       : 'GYSSLZB_orgcode',
+        	   selector  : '#GYSSLZB_orgcode'
+           },
+           {
+        	   ref       : 'XMSXSLZB_orgcode',
+        	   selector  : '#XMSXSLZB_orgcode'
            }
     ],
     init: function() {
@@ -99,6 +106,15 @@ Ext.define('DataIntegration.controller.Main', {
 	        },
 	        '#CGZJEJDQS_action' : {
 	                tap: this.onCGZJEJDQSButtonTap
+	        },
+	        '#CLSLZB_action' : {
+	                tap: this.onCLSLZBButtonTap
+	        },
+	        '#GYSSLZB_action' : {
+	                tap: this.onGYSSLZBButtonTap
+	        },
+	        '#XMSXSLZB_action' : {
+	                tap: this.onXMSXSLZBButtonTap
 	        }
 	    });
     },
@@ -218,7 +234,66 @@ Ext.define('DataIntegration.controller.Main', {
             },
             scope:this
         });
-	},   
+	},
+	
+    onCLSLZBButtonTap: function(){
+    	var CLSLZB_orgcode = this.getCLSLZB_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
+            params:{"graphVO.orgcode":CLSLZB_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CLSLZB_Chart_options.title.text = this.getCLSLZB_orgcode().record.data.text + '材料数量占比图';
+            	CLSLZB_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CLSLZB_Chart_options.series[0].data.push([data.materialclassname, parseFloat(data.value)]);
+            	}
+            	var CLSLZB_Chart = new Highcharts.Chart(CLSLZB_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },	
+	
+    onGYSSLZBButtonTap: function(){
+    	var GYSSLZB_orgcode = this.getGYSSLZB_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
+            params:{"graphVO.orgcode":GYSSLZB_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	GYSSLZB_Chart_options.title.text = this.getGYSSLZB_orgcode().record.data.text + '供应商数量占比图';
+            	GYSSLZB_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		GYSSLZB_Chart_options.series[0].data.push([data.orgName, parseFloat(data.value)]);
+            	}
+            	var GYSSLZB_Chart = new Highcharts.Chart(GYSSLZB_Chart_options);
+            },
+            scope:this
+        });
+    },
+    
+	
+    onXMSXSLZBButtonTap: function(){
+    	var XMSXSLZB_orgcode = this.getXMSXSLZB_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
+            params:{"graphVO.orgcode":XMSXSLZB_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	XMSXSLZB_Chart_options.title.text = this.getXMSXSLZB_orgcode().record.data.text + '项目上线数量占比图';
+            	XMSXSLZB_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		XMSXSLZB_Chart_options.series[0].data.push([data.orgName, parseFloat(data.value)]);
+            	}
+            	var XMSXSLZB_Chart = new Highcharts.Chart(XMSXSLZB_Chart_options);
+            },
+            scope:this
+        });
+    },    
     
     onLeafTap: function(list, index) {
         var navigation = this.getNavigation(),
@@ -340,7 +415,7 @@ Ext.define('DataIntegration.controller.Main', {
          	var fakeResult = [];
         	fakeResult.push({result:'success'});
         	this.processAuthorizeResult(fakeResult);
-         */
+         */	
         Ext.util.JSONP.request({
             url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!userLoginJson.do',
             params:{"graphVO.loginname":username,"graphVO.password":passwd},
