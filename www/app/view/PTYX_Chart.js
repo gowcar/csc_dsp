@@ -1,3 +1,51 @@
+var XMSXSLTJ_Chart_options = {
+      chart: {
+         renderTo: 'XMSXSLTJ_Chart_chartContainer',
+         defaultSeriesType: 'column'
+      },
+      title: {
+         text: ''
+      },
+      xAxis: {
+         categories: []
+      },
+      yAxis: {
+         title: {
+            text: '数量(个)',
+            style: {
+               color: '#4572A7'
+            }
+         },
+         stackLabels: {
+            enabled: true,
+            style: {
+               fontWeight: 'bold',
+               color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+            }
+         }
+      },
+      tooltip: {
+         formatter: function() {
+            return '<b>'+ this.x + '</b><br/>'+ this.y + '个';
+         }
+      },
+      plotOptions: {
+         column: {
+            stacking: 'normal',
+            dataLabels: {
+               enabled: true,
+               color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+            }
+         }
+      },
+      legend: {
+      	 enabled: false
+      },
+      series: [{
+         data:[]   
+      }]
+};
+
 var XMSXSLZB_Chart_options = {
     chart : {
         renderTo : 'XMSXSLZB_Chart_chartContainer',
@@ -56,6 +104,28 @@ Ext.define('DataIntegration.view.PTYX_Chart', {
                                                                 html : '组织机构'
                                                             }, {
                                                                 xtype : 'selectfield',
+                                                                id : 'XMSXSLTJ_orgcode',
+                                                                options : orgs,
+                                                                cls : 'toolbar_select'
+                                                            }, {
+                                                                id : 'XMSXSLTJ_action',
+                                                                ui : 'action',
+                                                                text : '统计'
+                                                            }]
+                                                }, {
+                                                    html : '<div id="XMSXSLTJ_Chart_chartContainer"></div>'
+                                                }]
+                                    },{
+                                        layout : 'fit',
+                                        items : [{
+                                                    xtype : 'toolbar',
+                                                    docked : 'top',
+                                                    items : [{
+                                                                xtype : 'label',
+                                                                cls : 'toolbar_label',
+                                                                html : '组织机构'
+                                                            }, {
+                                                                xtype : 'selectfield',
                                                                 id : 'XMSXSLZB_orgcode',
                                                                 options : orgs,
                                                                 cls : 'toolbar_select'
@@ -74,15 +144,21 @@ Ext.define('DataIntegration.view.PTYX_Chart', {
                 setTimeout(function() {
                             var chartWidth = Ext.getBody().getWidth() - 270;
                             var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
+
+                            $('#XMSXSLTJ_Chart_chartContainer').width(chartWidth);
+                            $('#XMSXSLTJ_Chart_chartContainer').height(chartHeight);                            
+                            
                             $('#XMSXSLZB_Chart_chartContainer').width(chartWidth);
                             $('#XMSXSLZB_Chart_chartContainer').height(chartHeight);
 
                             var mainController = dspApp.getController('Main');
+                            mainController.onXMSXSLTJButtonTap.apply(mainController);
                             mainController.onXMSXSLZBButtonTap.apply(mainController);
                         }, 500);
             },
             initialize : function() {
                 var mainController = dspApp.getController('Main');
+                mainController.getXMSXSLTJ_orgcode().setValue('100');
                 mainController.getXMSXSLZB_orgcode().setValue('100');
             }
         });

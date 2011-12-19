@@ -1,80 +1,3 @@
-var CGJGQS_Chart_options = {
-    chart : {
-        renderTo : 'CGJGQS_Chart_chartContainer',
-        defaultSeriesType : 'line'
-    },
-    title : {
-        text : ''
-    },
-    xAxis : [{
-                categories : []
-            }],
-    yAxis : {
-        title : {
-            text : '金额（千万）',
-            style : {
-                color : '#4572A7'
-            }
-        },
-        labels : {
-            formatter : function() {
-                return this.value;
-            },
-            style : {
-                color : '#4572A7'
-            }
-        }
-
-    },
-    tooltip : {
-        formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + toDecimal(this.y) + '千万';
-        }
-    },
-    legend : {
-        enabled : false
-    },
-    series : [{
-                data : []
-            }]
-};
-
-var CGZJEZB_Chart_options = {
-    chart : {
-        renderTo : 'CGZJEZB_Chart_chartContainer',
-        plotBackgroundColor : null,
-        plotBorderWidth : null,
-        plotShadow : false
-    },
-    title : {
-        text : ''
-    },
-    tooltip : {
-        formatter : function() {
-            return '<b>' + this.point.name + '</b>: ' + toDecimal(this.percentage) + ' %';
-        }
-    },
-    plotOptions : {
-        pie : {
-            allowPointSelect : true,
-            cursor : 'pointer',
-            dataLabels : {
-                enabled : true,
-                color : '#000000',
-                connectorColor : '#000000',
-                formatter : function() {
-                    return '<b>' + this.point.name + '</b>: ' + toDecimal(this.percentage) + ' %';
-                }
-            },
-            showInLegend : true
-        }
-    },
-    series : [{
-        type : 'pie',
-        data : []
-    }]
-};
-
 var CGZJEQS_Chart_options = {
       chart: {
          renderTo: 'CGZJEQS_Chart_chartContainer',
@@ -122,6 +45,43 @@ var CGZJEQS_Chart_options = {
          data:[]   
       }]
 };
+
+var CGZJEZB_Chart_options = {
+    chart : {
+        renderTo : 'CGZJEZB_Chart_chartContainer',
+        plotBackgroundColor : null,
+        plotBorderWidth : null,
+        plotShadow : false
+    },
+    title : {
+        text : ''
+    },
+    tooltip : {
+        formatter : function() {
+            return '<b>' + this.point.name + '</b>: ' + toDecimal(this.percentage) + ' %';
+        }
+    },
+    plotOptions : {
+        pie : {
+            allowPointSelect : true,
+            cursor : 'pointer',
+            dataLabels : {
+                enabled : true,
+                color : '#000000',
+                connectorColor : '#000000',
+                formatter : function() {
+                    return '<b>' + this.point.name + '</b>: ' + toDecimal(this.percentage) + ' %';
+                }
+            },
+            showInLegend : true
+        }
+    },
+    series : [{
+        type : 'pie',
+        data : []
+    }]
+};
+
 
 var CGZJEYDQS_Chart_options = {
     chart : {
@@ -227,7 +187,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 html : '组织机构'
                                                             }, {
                                                                 xtype : 'selectfield',
-                                                                id : 'CGJGQS_orgcode',
+                                                                id : 'CGZJEQS_orgcode',
                                                                 options : orgs,
                                                                 cls:'toolbar_select'
                                                             }, {
@@ -236,26 +196,17 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 html : '年份'
                                                             }, {
                                                                 xtype : 'selectfield',
-                                                                id : 'CGJGQS_yearcode',
+                                                                id : 'CGZJEQS_yearcode',
                                                                 options : years,
                                                                 cls:'toolbar_select'
                                                             }, {
-                                                                xtype : 'label',
-                                                                cls : 'toolbar_label',
-                                                                html : '材料名称'
-                                                            }, {
-                                                                xtype : 'selectfield',
-                                                                id : 'CGJGQS_materialclasscode',
-                                                                options : material_classes,
-                                                                cls:'toolbar_select'
-                                                            }, {
-                                                                id : 'CGJGQS_action',
+                                                                id : 'CGZJEQS_action',
                                                                 ui : 'action',
                                                                 text : '统计'
                                                             }]
                                                 }, {
-                                                    html : '<div id="CGJGQS_Chart_chartContainer"></div>'
-                                                }]
+                                                    html : '<div id="CGZJEQS_Chart_chartContainer"></div>'
+                                                }] 
                                     }, {
                                         layout : 'fit',
                                         items : [{
@@ -286,37 +237,6 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                             }]
                                                 }, {
                                                     html : '<div id="CGZJEZB_Chart_chartContainer"></div>'
-                                                }] 
-                                    }, {
-                                        layout : 'fit',
-                                        items : [{
-                                                    xtype : 'toolbar',
-                                                    docked : 'top',
-                                                    items : [{
-                                                                xtype : 'label',
-                                                                cls : 'toolbar_label',
-                                                                html : '组织机构'
-                                                            }, {
-                                                                xtype : 'selectfield',
-                                                                id : 'CGZJEQS_orgcode',
-                                                                options : orgs,
-                                                                cls:'toolbar_select'
-                                                            }, {
-                                                                xtype : 'label',
-                                                                cls : 'toolbar_label',
-                                                                html : '年份'
-                                                            }, {
-                                                                xtype : 'selectfield',
-                                                                id : 'CGZJEQS_yearcode',
-                                                                options : years,
-                                                                cls:'toolbar_select'
-                                                            }, {
-                                                                id : 'CGZJEQS_action',
-                                                                ui : 'action',
-                                                                text : '统计'
-                                                            }]
-                                                }, {
-                                                    html : '<div id="CGZJEQS_Chart_chartContainer"></div>'
                                                 }] 
                                     }, {
                                         layout : 'fit',
@@ -387,14 +307,12 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                 setTimeout(function() {
                             var chartWidth = Ext.getBody().getWidth() - 270;
                             var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
-                            $('#CGJGQS_Chart_chartContainer').width(chartWidth);
-                            $('#CGJGQS_Chart_chartContainer').height(chartHeight);
-
-                            $('#CGZJEZB_Chart_chartContainer').width(chartWidth);
-                            $('#CGZJEZB_Chart_chartContainer').height(chartHeight);
                             
                             $('#CGZJEQS_Chart_chartContainer').width(chartWidth);
                             $('#CGZJEQS_Chart_chartContainer').height(chartHeight);
+
+                            $('#CGZJEZB_Chart_chartContainer').width(chartWidth);
+                            $('#CGZJEZB_Chart_chartContainer').height(chartHeight);
                             
                             $('#CGZJEYDQS_Chart_chartContainer').width(chartWidth);
                             $('#CGZJEYDQS_Chart_chartContainer').height(chartHeight);
@@ -403,7 +321,6 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                             $('#CGZJEJDQS_Chart_chartContainer').height(chartHeight);
 
                             var mainController = dspApp.getController('Main');
-                            mainController.onCGJGQSButtonTap.apply(mainController);
 							mainController.onCGZJEZBButtonTap.apply(mainController);
 							mainController.onCGZJEQSButtonTap.apply(mainController);
 							mainController.onCGZJEYDQSButtonTap.apply(mainController);
@@ -414,15 +331,11 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
             initialize : function() {
                 var mainController = dspApp.getController('Main');
                 
-                mainController.getCGJGQS_orgcode().setValue('100007');
-                mainController.getCGJGQS_yearcode().setValue('2011');
-                mainController.getCGJGQS_materialclasscode().setValue('100101');
+                mainController.getCGZJEQS_orgcode().setValue('100');
+                mainController.getCGZJEQS_yearcode().setValue('2011');
                 
                 mainController.getCGZJEZB_orgcode().setValue('100');
                 mainController.getCGZJEZB_yearcode().setValue('2011');
-                
-                mainController.getCGZJEQS_orgcode().setValue('100');
-                mainController.getCGZJEQS_yearcode().setValue('2011');
                 
                 mainController.getCGZJEYDQS_orgcode().setValue('100');
                 

@@ -75,12 +75,24 @@ Ext.define('DataIntegration.controller.Main', {
         	   selector  : '#CGZJEJDQS_endyearcode'
            },
            {
+        	   ref       : 'CLSLT10_orgcode',
+        	   selector  : '#CLSLT10_orgcode'
+           },
+           {
         	   ref       : 'CLSLZB_orgcode',
         	   selector  : '#CLSLZB_orgcode'
            },
            {
+        	   ref       : 'GYSSLTJ_orgcode',
+        	   selector  : '#GYSSLTJ_orgcode'
+           },
+           {
         	   ref       : 'GYSSLZB_orgcode',
         	   selector  : '#GYSSLZB_orgcode'
+           },
+           {
+        	   ref       : 'XMSXSLTJ_orgcode',
+        	   selector  : '#XMSXSLTJ_orgcode'
            },
            {
         	   ref       : 'XMSXSLZB_orgcode',
@@ -107,11 +119,20 @@ Ext.define('DataIntegration.controller.Main', {
 	        '#CGZJEJDQS_action' : {
 	                tap: this.onCGZJEJDQSButtonTap
 	        },
+	        '#CLSLT10_action' : {
+	                tap: this.onCLSLT10ButtonTap
+	        },
 	        '#CLSLZB_action' : {
 	                tap: this.onCLSLZBButtonTap
 	        },
+	        '#GYSSLTJ_action' : {
+	                tap: this.onGYSSLTJButtonTap
+	        },
 	        '#GYSSLZB_action' : {
 	                tap: this.onGYSSLZBButtonTap
+	        },
+	        '#XMSXSLTJ_action' : {
+	                tap: this.onXMSXSLTJButtonTap
 	        },
 	        '#XMSXSLZB_action' : {
 	                tap: this.onXMSXSLZBButtonTap
@@ -123,16 +144,17 @@ Ext.define('DataIntegration.controller.Main', {
 		console.log('onLaunch Main controller');
     },
     
+    /* 材料采购价格统计图 */
     onCGJGQSButtonTap: function(){
     	var CGJGQS_orgcode = this.getCGJGQS_orgcode().getValue();
     	var CGJGQS_yearcode = this.getCGJGQS_yearcode().getValue();
     	var CGJGQS_materialclass = this.getCGJGQS_materialclasscode().record.data.text;
     	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearEBillDetailJson.do',
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getYearEBillDetailJson.do',
             params:{"graphVO.orgcode":CGJGQS_orgcode,"graphVO.year":CGJGQS_yearcode,"graphVO.materialdesc":CGJGQS_materialclass},
             callbackKey:'jsonpcallback',
             callback:function(datas){
-            	CGJGQS_Chart_options.title.text = '材料采购价格趋势图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
+            	CGJGQS_Chart_options.title.text = CGJGQS_materialclass + '材料采购价格统计图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
             	CGJGQS_Chart_options.xAxis[0].categories.length = 0;
             	CGJGQS_Chart_options.series[0].data.length = 0;
             	for(var idx in datas){
@@ -147,99 +169,34 @@ Ext.define('DataIntegration.controller.Main', {
     	
     },
     
-    onCGZJEZBButtonTap: function(){
-    	var CGZJEZB_orgcode = this.getCGZJEZB_orgcode().getValue();
-    	var CGZJEZB_yearcode = this.getCGZJEZB_yearcode().getValue();
+    /* 材料数量Top10 */
+    onCLSLT10ButtonTap: function(){
+    	var CLSLT10_orgcode = this.getCLSLT10_orgcode().getValue();
     	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
-            params:{"graphVO.orgcode":CGZJEZB_orgcode,"graphVO.year":CGZJEZB_yearcode},
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!topMaterialClassNumJson.do',
+            params:{"graphVO.orgcode":CLSLT10_orgcode},
             callbackKey:'jsonpcallback',
             callback:function(datas){
-            	CGZJEZB_Chart_options.title.text = this.getCGZJEZB_orgcode().record.data.text + '全年度采购占比图(' + CGZJEZB_yearcode + '年度)';
-            	CGZJEZB_Chart_options.series[0].data.length = 0;
+            	CLSLT10_Chart_options.title.text = '材料数量Top10(' + this.getCLSLT10_orgcode().record.data.text + ')';
+            	CLSLT10_Chart_options.xAxis.categories.length = 0;
+            	CLSLT10_Chart_options.series[0].data.length = 0;
             	for(var idx in datas){
             		var data = datas[idx];
-            		CGZJEZB_Chart_options.series[0].data.push([data.orgName, parseFloat(data.value)]);
+            		CLSLT10_Chart_options.xAxis.categories.push(data.materialclassname);
+            		CLSLT10_Chart_options.series[0].data.push(parseFloat(data.value));
             	}
-            	var CGZJEZB_Chart = new Highcharts.Chart(CGZJEZB_Chart_options);
+            	var CLSLT10_Chart = new Highcharts.Chart(CLSLT10_Chart_options);
             },
             scope:this
         });
     	
-    },
+    },    
     
-    onCGZJEQSButtonTap: function(){
-    	var CGZJEQS_orgcode = this.getCGZJEQS_orgcode().getValue();
-    	var CGZJEQS_yearcode = this.getCGZJEQS_yearcode().getValue();
-    	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
-            params:{"graphVO.orgcode":CGZJEQS_orgcode,"graphVO.year":CGZJEQS_yearcode},
-            callbackKey:'jsonpcallback',
-            callback:function(datas){
-            	CGZJEQS_Chart_options.title.text = '采购总金额趋势图(' + this.getCGZJEQS_orgcode().record.data.text + '-' + CGZJEQS_yearcode + '年度)';
-            	CGZJEQS_Chart_options.xAxis.categories.length = 0;
-            	CGZJEQS_Chart_options.series[0].data.length = 0;
-            	for(var idx in datas){
-            		var data = datas[idx];
-            		CGZJEQS_Chart_options.xAxis.categories.push(data.orgName);
-            		CGZJEQS_Chart_options.series[0].data.push(parseFloat(data.value));
-            	}
-            	var CGZJEQS_Chart = new Highcharts.Chart(CGZJEQS_Chart_options);
-            },
-            scope:this
-        });
-    	
-    },
-    
-    onCGZJEYDQSButtonTap: function(){
-    	var CGZJEYDQS_orgcode = this.getCGZJEYDQS_orgcode().getValue();
-    	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
-            params:{"graphVO.orgcode":CGZJEYDQS_orgcode},
-            callbackKey:'jsonpcallback',
-            callback:function(datas){
-            	CGZJEYDQS_Chart_options.title.text = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额月度趋势图';
-            	CGZJEYDQS_Chart_options.xAxis[0].categories.length = 0;
-            	CGZJEYDQS_Chart_options.series[0].data.length = 0;
-            	for(var idx in datas){
-            		var data = datas[idx];
-            		CGZJEYDQS_Chart_options.xAxis[0].categories.push(data.month);
-            		CGZJEYDQS_Chart_options.series[0].data.push(parseFloat(data.value));
-            	}
-            	var CGZJEYDQS_Chart = new Highcharts.Chart(CGZJEYDQS_Chart_options);
-            },
-            scope:this
-        });
-    	
-    },
- 
-	onCGZJEJDQSButtonTap: function(){
-    	var CGZJEJDQS_orgcode = this.getCGZJEJDQS_orgcode().getValue();
-    	var CGZJEJDQS_startyearcode = this.getCGZJEJDQS_startyearcode().getValue();
-    	var CGZJEJDQS_endyearcode = this.getCGZJEJDQS_endyearcode().getValue();
-    	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
-            params:{"graphVO.orgcode":CGZJEJDQS_orgcode, "graphVO.startyear":CGZJEJDQS_startyearcode, "graphVO.endyear":CGZJEJDQS_endyearcode},
-            callbackKey:'jsonpcallback',
-            callback:function(datas){
-            	CGZJEJDQS_Chart_options.title.text = this.getCGZJEJDQS_orgcode().record.data.text + '采购总金额季度趋势图';
-            	CGZJEJDQS_Chart_options.xAxis[0].categories.length = 0;
-            	CGZJEJDQS_Chart_options.series[0].data.length = 0;
-            	for(var idx in datas){
-            		var data = datas[idx];
-            		CGZJEJDQS_Chart_options.xAxis[0].categories.push(data.quarter);
-            		CGZJEJDQS_Chart_options.series[0].data.push(parseFloat(data.value));
-            	}
-            	var CGZJEJDQS_Chart = new Highcharts.Chart(CGZJEJDQS_Chart_options);
-            },
-            scope:this
-        });
-	},
-	
+	/* 材料数量占比图 */
     onCLSLZBButtonTap: function(){
     	var CLSLZB_orgcode = this.getCLSLZB_orgcode().getValue();
     	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
             params:{"graphVO.orgcode":CLSLZB_orgcode},
             callbackKey:'jsonpcallback',
             callback:function(datas){
@@ -255,11 +212,130 @@ Ext.define('DataIntegration.controller.Main', {
         });
     	
     },	
+    
+    /* 采购总金额统计图 */
+    onCGZJEQSButtonTap: function(){
+    	var CGZJEQS_orgcode = this.getCGZJEQS_orgcode().getValue();
+    	var CGZJEQS_yearcode = this.getCGZJEQS_yearcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
+            params:{"graphVO.orgcode":CGZJEQS_orgcode,"graphVO.year":CGZJEQS_yearcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEQS_Chart_options.title.text = '采购总金额统计图(' + this.getCGZJEQS_orgcode().record.data.text + '-' + CGZJEQS_yearcode + '年度)';
+            	CGZJEQS_Chart_options.xAxis.categories.length = 0;
+            	CGZJEQS_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEQS_Chart_options.xAxis.categories.push(data.orgName);
+            		CGZJEQS_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var CGZJEQS_Chart = new Highcharts.Chart(CGZJEQS_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },    
+    
+    /* 采购总金额占比图 */
+    onCGZJEZBButtonTap: function(){
+    	var CGZJEZB_orgcode = this.getCGZJEZB_orgcode().getValue();
+    	var CGZJEZB_yearcode = this.getCGZJEZB_yearcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
+            params:{"graphVO.orgcode":CGZJEZB_orgcode,"graphVO.year":CGZJEZB_yearcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEZB_Chart_options.title.text = this.getCGZJEZB_orgcode().record.data.text + '采购总金额占比图(' + CGZJEZB_yearcode + '年度)';
+            	CGZJEZB_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEZB_Chart_options.series[0].data.push([data.orgName, parseFloat(data.value)]);
+            	}
+            	var CGZJEZB_Chart = new Highcharts.Chart(CGZJEZB_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },
+
+    
+    /* 采购总金额月度统计图 */
+    onCGZJEYDQSButtonTap: function(){
+    	var CGZJEYDQS_orgcode = this.getCGZJEYDQS_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
+            params:{"graphVO.orgcode":CGZJEYDQS_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEYDQS_Chart_options.title.text = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额月度统计图';
+            	CGZJEYDQS_Chart_options.xAxis[0].categories.length = 0;
+            	CGZJEYDQS_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEYDQS_Chart_options.xAxis[0].categories.push(data.month);
+            		CGZJEYDQS_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var CGZJEYDQS_Chart = new Highcharts.Chart(CGZJEYDQS_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },
+ 
+    /* 采购总金额季度统计图 */
+	onCGZJEJDQSButtonTap: function(){
+    	var CGZJEJDQS_orgcode = this.getCGZJEJDQS_orgcode().getValue();
+    	var CGZJEJDQS_startyearcode = this.getCGZJEJDQS_startyearcode().getValue();
+    	var CGZJEJDQS_endyearcode = this.getCGZJEJDQS_endyearcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
+            params:{"graphVO.orgcode":CGZJEJDQS_orgcode, "graphVO.startyear":CGZJEJDQS_startyearcode, "graphVO.endyear":CGZJEJDQS_endyearcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	CGZJEJDQS_Chart_options.title.text = this.getCGZJEJDQS_orgcode().record.data.text + '采购总金额季度统计图';
+            	CGZJEJDQS_Chart_options.xAxis[0].categories.length = 0;
+            	CGZJEJDQS_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		CGZJEJDQS_Chart_options.xAxis[0].categories.push(data.quarter);
+            		CGZJEJDQS_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var CGZJEJDQS_Chart = new Highcharts.Chart(CGZJEJDQS_Chart_options);
+            },
+            scope:this
+        });
+	},
 	
+    /* 供应商数量统计图 */
+    onGYSSLTJButtonTap: function(){
+    	var GYSSLTJ_orgcode = this.getGYSSLTJ_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getSupplierNumJson.do',
+            params:{"graphVO.orgcode":GYSSLTJ_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	GYSSLTJ_Chart_options.title.text = '供应商数量统计图(' + this.getGYSSLTJ_orgcode().record.data.text + ')';
+            	GYSSLTJ_Chart_options.xAxis.categories.length = 0;
+            	GYSSLTJ_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		GYSSLTJ_Chart_options.xAxis.categories.push(data.orgName);
+            		GYSSLTJ_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var GYSSLTJ_Chart = new Highcharts.Chart(GYSSLTJ_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },    
+ 	
+
+	/* 供应商数量占比图 */
     onGYSSLZBButtonTap: function(){
     	var GYSSLZB_orgcode = this.getGYSSLZB_orgcode().getValue();
     	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
             params:{"graphVO.orgcode":GYSSLZB_orgcode},
             callbackKey:'jsonpcallback',
             callback:function(datas){
@@ -274,12 +350,35 @@ Ext.define('DataIntegration.controller.Main', {
             scope:this
         });
     },
+
+	/* 项目上线数量统计图 */
+    onXMSXSLTJButtonTap: function(){
+    	var XMSXSLTJ_orgcode = this.getXMSXSLTJ_orgcode().getValue();
+    	Ext.util.JSONP.request({
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getProjectNumJson.do',
+            params:{"graphVO.orgcode":XMSXSLTJ_orgcode},
+            callbackKey:'jsonpcallback',
+            callback:function(datas){
+            	XMSXSLTJ_Chart_options.title.text = '项目上线数量统计图(' + this.getXMSXSLTJ_orgcode().record.data.text + ')';
+            	XMSXSLTJ_Chart_options.xAxis.categories.length = 0;
+            	XMSXSLTJ_Chart_options.series[0].data.length = 0;
+            	for(var idx in datas){
+            		var data = datas[idx];
+            		XMSXSLTJ_Chart_options.xAxis.categories.push(data.orgName);
+            		XMSXSLTJ_Chart_options.series[0].data.push(parseFloat(data.value));
+            	}
+            	var XMSXSLTJ_Chart = new Highcharts.Chart(XMSXSLTJ_Chart_options);
+            },
+            scope:this
+        });
+    	
+    },   
     
-	
+	/* 项目上线数量占比图 */
     onXMSXSLZBButtonTap: function(){
     	var XMSXSLZB_orgcode = this.getXMSXSLZB_orgcode().getValue();
     	Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
             params:{"graphVO.orgcode":XMSXSLZB_orgcode},
             callbackKey:'jsonpcallback',
             callback:function(datas){
@@ -415,9 +514,9 @@ Ext.define('DataIntegration.controller.Main', {
          	var fakeResult = [];
         	fakeResult.push({result:'success'});
         	this.processAuthorizeResult(fakeResult);
-         */	
+        */	
         Ext.util.JSONP.request({
-            url:'http://jc.glodon.com:9000/managementjson/statistic/graphJson!userLoginJson.do',
+            url:'http://jc.cscec.com/managementjson/statistic/graphJson!userLoginJson.do',
             params:{"graphVO.loginname":username,"graphVO.password":passwd},
             callbackKey:'jsonpcallback',
             callback:this.processAuthorizeResult,
