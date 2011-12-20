@@ -29,7 +29,7 @@ Ext.define('DataIntegration.store.Menus', {
              	view  : 'PTYX_Chart'
             },
             { 
-              text : '市场趋势类业务图表',
+              text : '因素分析类图表',
              	icon  : 'resources/img/icons/empty_clipboard.png',
              	leaf  : true,
              	view  : 'SCQS_Chart'

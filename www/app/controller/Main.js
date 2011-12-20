@@ -97,6 +97,66 @@ Ext.define('DataIntegration.controller.Main', {
            {
         	   ref       : 'XMSXSLZB_orgcode',
         	   selector  : '#XMSXSLZB_orgcode'
+           },
+           {
+        	   ref       : 'CGJGDEDJDB_orgcode',
+        	   selector  : '#CGJGDEDJDB_orgcode'
+           },
+           {
+        	   ref       : 'CGJGDEDJDB_yearcode',
+        	   selector  : '#CGJGDEDJDB_yearcode'
+           },
+           {
+        	   ref       : 'CGJGDEDJDB_materialclasscode',
+        	   selector  : '#CGJGDEDJDB_materialclasscode'
+           },
+           {
+        	   ref       : 'CGJGDEDJPLL_orgcode',
+        	   selector  : '#CGJGDEDJPLL_orgcode'
+           },
+           {
+        	   ref       : 'CGJGDEDJPLL_yearcode',
+        	   selector  : '#CGJGDEDJPLL_yearcode'
+           },
+           {
+        	   ref       : 'CGJGDEDJPLL_materialclasscode',
+        	   selector  : '#CGJGDEDJPLL_materialclasscode'
+           },
+           {
+        	   ref       : 'CGJGZDPLL_orgcode',
+        	   selector  : '#CGJGZDPLL_orgcode'
+           },
+           {
+        	   ref       : 'CGJGZDPLL_yearcode',
+        	   selector  : '#CGJGZDPLL_yearcode'
+           },
+           {
+        	   ref       : 'CGJGZDPLL_materialclasscode',
+        	   selector  : '#CGJGZDPLL_materialclasscode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXND_orgcode',
+        	   selector  : '#CGJGPPWDXND_orgcode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXND_yearcode',
+        	   selector  : '#CGJGPPWDXND_yearcode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXND_materialclasscode',
+        	   selector  : '#CGJGPPWDXND_materialclasscode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXYD_orgcode',
+        	   selector  : '#CGJGPPWDXYD_orgcode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXYD_yearcode',
+        	   selector  : '#CGJGPPWDXYD_yearcode'
+           },
+           {
+        	   ref       : 'CGJGPPWDXYD_materialclasscode',
+        	   selector  : '#CGJGPPWDXYD_materialclasscode'
            }
     ],
     init: function() {
@@ -136,6 +196,21 @@ Ext.define('DataIntegration.controller.Main', {
 	        },
 	        '#XMSXSLZB_action' : {
 	                tap: this.onXMSXSLZBButtonTap
+	        },
+	        '#CGJGDEDJDB_action' : {
+	                tap: this.onCGJGDEDJDBButtonTap
+	        },
+	        '#CGJGDEDJPLL_action' : {
+	                tap: this.onCGJGDEDJPLLButtonTap
+	        },
+	        '#CGJGZDPLL_action' : {
+	                tap: this.onCGJGZDPLLButtonTap
+	        },
+	        '#CGJGPPWDXND_action' : {
+	                tap: this.onCGJGPPWDXNDButtonTap
+	        },
+	        '#CGJGPPWDXYD_action' : {
+	                tap: this.onCGJGPPWDXYDButtonTap
 	        }
 	    });
     },
@@ -392,7 +467,32 @@ Ext.define('DataIntegration.controller.Main', {
             },
             scope:this
         });
-    },    
+    },
+    
+    /* 材料采购价格和定额单价对比分析图 */
+    onCGJGDEDJDBButtonTap: function(){
+    	var CGJGDEDJDB_Chart = new Highcharts.Chart(CGJGDEDJDB_Chart_options);
+    },
+    
+    /* 材料采购价格和定额单价偏离率分析图 */
+    onCGJGDEDJPLLButtonTap: function(){
+    	var CGJGDEDJPLL_Chart = new Highcharts.Chart(CGJGDEDJPLL_Chart_options);
+    },
+    
+    /* 材料价格最大偏离率统计图 */
+    onCGJGZDPLLButtonTap: function(){
+    	var CGJGZDPLL_Chart = new Highcharts.Chart(CGJGZDPLL_Chart_options);
+    },
+    
+    /* 材料价格品牌稳定性分析图 */
+    onCGJGPPWDXNDButtonTap: function(){
+    	var CGJGPPWDXND_Chart = new Highcharts.Chart(CGJGPPWDXND_Chart_options);
+    },
+    
+    /* 材料价格品牌稳定性分析图 */
+    onCGJGPPWDXYDButtonTap: function(){
+    	var CGJGPPWDXYD_Chart = new Highcharts.Chart(CGJGPPWDXYD_Chart_options);
+    },
     
     onLeafTap: function(list, index) {
         var navigation = this.getNavigation(),
@@ -514,7 +614,7 @@ Ext.define('DataIntegration.controller.Main', {
          	var fakeResult = [];
         	fakeResult.push({result:'success'});
         	this.processAuthorizeResult(fakeResult);
-        */	
+         */
         Ext.util.JSONP.request({
             url:'http://jc.cscec.com/managementjson/statistic/graphJson!userLoginJson.do',
             params:{"graphVO.loginname":username,"graphVO.password":passwd},
