@@ -40,51 +40,51 @@ var CGJGQS_Chart_options = {
 };
 
 var CLSLT10_Chart_options = {
-      chart: {
-         renderTo: 'CLSLT10_Chart_chartContainer',
-         defaultSeriesType: 'column'
-      },
-      title: {
-         text: ''
-      },
-      xAxis: {
-         categories: []
-      },
-      yAxis: {
-         title: {
-            text: '数量(千万)',
-            style: {
-               color: '#4572A7'
+    chart : {
+        renderTo : 'CLSLT10_Chart_chartContainer',
+        defaultSeriesType : 'column'
+    },
+    title : {
+        text : ''
+    },
+    xAxis : [{
+        categories : []
+    }],
+    yAxis : {
+        title : {
+            text : '数量(千万)',
+            style : {
+                color : '#4572A7'
             }
-         },
-         stackLabels: {
-            enabled: true,
-            style: {
-               fontWeight: 'bold',
-               color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+        },
+        stackLabels : {
+            enabled : true,
+            style : {
+                fontWeight : 'bold',
+                color : (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
             }
-         }
-      },
-      tooltip: {
-         formatter: function() {
-            return '<b>'+ this.x + '</b><br/>'+ this.y + '千万';
-         }
-      },
-      plotOptions: {
-         column: {
-            stacking: 'normal',
-            dataLabels: {
-               enabled: true,
-               color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+        }
+    },
+    tooltip : {
+        formatter : function() {
+            return '<b>' + this.x + '</b><br/>' + this.y + '千万';
+        }
+    },
+    plotOptions : {
+        column : {
+            stacking : 'normal',
+            dataLabels : {
+                enabled : true,
+                color : (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
             }
-         }
-      },
-      legend: {
-      	 enabled: false
-      },
-      series: [{
-         data:[]   
-      }]
+        }
+    },
+    legend : {
+        enabled : false
+    },
+    series : [{
+                data : []
+            }]
 };
 
 var CLSLZB_Chart_options = {
@@ -118,14 +118,15 @@ var CLSLZB_Chart_options = {
         }
     },
     series : [{
-        type : 'pie',
-        data : []
-    }]
+                type : 'pie',
+                data : []
+            }]
 };
 
 Ext.define('DataIntegration.view.CailiaoJiage', {
-           extend: 'Ext.Container',
-           xtype:'cailiaojiageview',
+            extend : 'Ext.Container',
+            xtype : 'cailiaojiageview',
+            loaded : false,
             config : {
                 layout : 'fit',
                 items : [{
@@ -147,7 +148,7 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGQS_orgcode',
                                                                 options : orgs,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -156,7 +157,7 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGQS_yearcode',
                                                                 options : years,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -165,7 +166,7 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGQS_materialclasscode',
                                                                 options : material_classes,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGJGQS_action',
                                                                 ui : 'action',
@@ -196,9 +197,9 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                                                 }, {
                                                     html : '<div id="CLSLT10_Chart_chartContainer"></div>'
                                                 }]
-                                    },{
-                                    		layout : 'fit',
-                                    	    items : [{
+                                    }, {
+                                        layout : 'fit',
+                                        items : [{
                                                     xtype : 'toolbar',
                                                     docked : 'top',
                                                     items : [{
@@ -221,25 +222,29 @@ Ext.define('DataIntegration.view.CailiaoJiage', {
                                     }]
                         }]
             },
-            refreshChart : function(toolbarHeight) {
-                setTimeout(function() {
-                            var chartWidth = Ext.getBody().getWidth() - 270;
-                            var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
-                            
-                            $('#CGJGQS_Chart_chartContainer').width(chartWidth);
-                            $('#CGJGQS_Chart_chartContainer').height(chartHeight);
-                            
-                            $('#CLSLT10_Chart_chartContainer').width(chartWidth);
-                            $('#CLSLT10_Chart_chartContainer').height(chartHeight);
-                            
-                            $('#CLSLZB_Chart_chartContainer').width(chartWidth);
-                            $('#CLSLZB_Chart_chartContainer').height(chartHeight);
+            switchPanel : function(toolbarHeight) {
+                var me = this;
+                if (me.loaded === false) {
+                    setTimeout(function() {
+                                var chartWidth = Ext.getBody().getWidth() - 270;
+                                var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
 
-                            var mainController = dspApp.getController('Main');
-                            mainController.onCGJGQSButtonTap.apply(mainController);
-                            mainController.onCLSLT10ButtonTap.apply(mainController);
-                            mainController.onCLSLZBButtonTap.apply(mainController);
-                        }, 500);
+                                $('#CGJGQS_Chart_chartContainer').width(chartWidth);
+                                $('#CGJGQS_Chart_chartContainer').height(chartHeight);
+
+                                $('#CLSLT10_Chart_chartContainer').width(chartWidth);
+                                $('#CLSLT10_Chart_chartContainer').height(chartHeight);
+
+                                $('#CLSLZB_Chart_chartContainer').width(chartWidth);
+                                $('#CLSLZB_Chart_chartContainer').height(chartHeight);
+
+                                var mainController = dspApp.getController('Main');
+                                mainController.onCGJGQSButtonTap.apply(mainController);
+                                mainController.onCLSLT10ButtonTap.apply(mainController);
+                                mainController.onCLSLZBButtonTap.apply(mainController);
+                                me.loaded = true;
+                            }, 500);
+                }
             },
             initialize : function() {
                 var mainController = dspApp.getController('Main');

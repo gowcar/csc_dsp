@@ -37,5 +37,3 @@ function onBodyLoad() {
 	document.addEventListener("deviceready", function(){dataIntegrationLauncher.mainLaunch();}, true);
 }
 
-
-

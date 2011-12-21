@@ -1,49 +1,49 @@
 var CGZJEQS_Chart_options = {
-      chart: {
-         renderTo: 'CGZJEQS_Chart_chartContainer',
-         defaultSeriesType: 'column'
-      },
-      title: {
-         text: ''
-      },
-      xAxis: {
-         categories: []
-      },
-      yAxis: {
-         title: {
-            text: '价格（千万）',
-            style: {
-               color: '#4572A7'
+    chart : {
+        renderTo : 'CGZJEQS_Chart_chartContainer',
+        defaultSeriesType : 'column'
+    },
+    title : {
+        text : ''
+    },
+    xAxis : [{
+        categories : []
+    }],
+    yAxis : {
+        title : {
+            text : '价格（千万）',
+            style : {
+                color : '#4572A7'
             }
-         },
-         stackLabels: {
-            enabled: true,
-            style: {
-               fontWeight: 'bold',
-               color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+        },
+        stackLabels : {
+            enabled : true,
+            style : {
+                fontWeight : 'bold',
+                color : (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
             }
-         }
-      },
-      tooltip: {
-         formatter: function() {
-            return '<b>'+ this.x + '</b><br/>'+ this.y + '千万';
-         }
-      },
-      plotOptions: {
-         column: {
-            stacking: 'normal',
-            dataLabels: {
-               enabled: true,
-               color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+        }
+    },
+    tooltip : {
+        formatter : function() {
+            return '<b>' + this.x + '</b><br/>' + this.y + '千万';
+        }
+    },
+    plotOptions : {
+        column : {
+            stacking : 'normal',
+            dataLabels : {
+                enabled : true,
+                color : (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
             }
-         }
-      },
-      legend: {
-      	 enabled: false
-      },
-      series: [{
-         data:[]   
-      }]
+        }
+    },
+    legend : {
+        enabled : false
+    },
+    series : [{
+                data : []
+            }]
 };
 
 var CGZJEZB_Chart_options = {
@@ -77,11 +77,10 @@ var CGZJEZB_Chart_options = {
         }
     },
     series : [{
-        type : 'pie',
-        data : []
-    }]
+                type : 'pie',
+                data : []
+            }]
 };
-
 
 var CGZJEYDQS_Chart_options = {
     chart : {
@@ -168,6 +167,7 @@ var CGZJEJDQS_Chart_options = {
 Ext.define('DataIntegration.view.CGJE_Chart', {
             extend : 'Ext.Container',
             xtype : 'cgje_chartview',
+            loaded : false,
             config : {
                 layout : 'fit',
                 items : [{
@@ -189,7 +189,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEQS_orgcode',
                                                                 options : orgs,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -198,7 +198,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEQS_yearcode',
                                                                 options : years,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGZJEQS_action',
                                                                 ui : 'action',
@@ -206,7 +206,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                             }]
                                                 }, {
                                                     html : '<div id="CGZJEQS_Chart_chartContainer"></div>'
-                                                }] 
+                                                }]
                                     }, {
                                         layout : 'fit',
                                         items : [{
@@ -220,7 +220,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEZB_orgcode',
                                                                 options : orgs,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -229,7 +229,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEZB_yearcode',
                                                                 options : years,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGZJEZB_action',
                                                                 ui : 'action',
@@ -237,7 +237,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                             }]
                                                 }, {
                                                     html : '<div id="CGZJEZB_Chart_chartContainer"></div>'
-                                                }] 
+                                                }]
                                     }, {
                                         layout : 'fit',
                                         items : [{
@@ -251,7 +251,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEYDQS_orgcode',
                                                                 options : orgs,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGZJEYDQS_action',
                                                                 ui : 'action',
@@ -259,7 +259,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                             }]
                                                 }, {
                                                     html : '<div id="CGZJEYDQS_Chart_chartContainer"></div>'
-                                                }] 
+                                                }]
                                     }, {
                                         layout : 'fit',
                                         items : [{
@@ -273,7 +273,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEJDQS_orgcode',
                                                                 options : orgs,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -282,7 +282,7 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEJDQS_startyearcode',
                                                                 options : years,
-                                                                cls:'toolbar_select'
+                                                                cls : 'toolbar_select'
                                                             }, {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
@@ -291,54 +291,57 @@ Ext.define('DataIntegration.view.CGJE_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGZJEJDQS_endyearcode',
                                                                 options : years,
-                                                                cls:'toolbar_select'
-                                                            },{
+                                                                cls : 'toolbar_select'
+                                                            }, {
                                                                 id : 'CGZJEJDQS_action',
                                                                 ui : 'action',
                                                                 text : '统计'
                                                             }]
                                                 }, {
                                                     html : '<div id="CGZJEJDQS_Chart_chartContainer"></div>'
-                                                }] 
+                                                }]
                                     }]
                         }]
             },
-            refreshChart : function(toolbarHeight) {
-                setTimeout(function() {
-                            var chartWidth = Ext.getBody().getWidth() - 270;
-                            var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
-                            
-                            $('#CGZJEQS_Chart_chartContainer').width(chartWidth);
-                            $('#CGZJEQS_Chart_chartContainer').height(chartHeight);
+            switchPanel : function(toolbarHeight) {
+                var me = this;
+                if (me.loaded === false) {
+                    setTimeout(function() {
+                                var chartWidth = Ext.getBody().getWidth() - 270;
+                                var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
 
-                            $('#CGZJEZB_Chart_chartContainer').width(chartWidth);
-                            $('#CGZJEZB_Chart_chartContainer').height(chartHeight);
-                            
-                            $('#CGZJEYDQS_Chart_chartContainer').width(chartWidth);
-                            $('#CGZJEYDQS_Chart_chartContainer').height(chartHeight);
-                            
-                            $('#CGZJEJDQS_Chart_chartContainer').width(chartWidth);
-                            $('#CGZJEJDQS_Chart_chartContainer').height(chartHeight);
+                                $('#CGZJEQS_Chart_chartContainer').width(chartWidth);
+                                $('#CGZJEQS_Chart_chartContainer').height(chartHeight);
 
-                            var mainController = dspApp.getController('Main');
-							mainController.onCGZJEZBButtonTap.apply(mainController);
-							mainController.onCGZJEQSButtonTap.apply(mainController);
-							mainController.onCGZJEYDQSButtonTap.apply(mainController);
-							mainController.onCGZJEJDQSButtonTap.apply(mainController);
+                                $('#CGZJEZB_Chart_chartContainer').width(chartWidth);
+                                $('#CGZJEZB_Chart_chartContainer').height(chartHeight);
 
-                        }, 500);
+                                $('#CGZJEYDQS_Chart_chartContainer').width(chartWidth);
+                                $('#CGZJEYDQS_Chart_chartContainer').height(chartHeight);
+
+                                $('#CGZJEJDQS_Chart_chartContainer').width(chartWidth);
+                                $('#CGZJEJDQS_Chart_chartContainer').height(chartHeight);
+
+                                var mainController = dspApp.getController('Main');
+                                mainController.onCGZJEZBButtonTap.apply(mainController);
+                                mainController.onCGZJEQSButtonTap.apply(mainController);
+                                mainController.onCGZJEYDQSButtonTap.apply(mainController);
+                                mainController.onCGZJEJDQSButtonTap.apply(mainController);
+                                me.loaded = true;
+                            }, 500);
+                }
             },
             initialize : function() {
                 var mainController = dspApp.getController('Main');
-                
+
                 mainController.getCGZJEQS_orgcode().setValue('100');
                 mainController.getCGZJEQS_yearcode().setValue('2011');
-                
+
                 mainController.getCGZJEZB_orgcode().setValue('100');
                 mainController.getCGZJEZB_yearcode().setValue('2011');
-                
+
                 mainController.getCGZJEYDQS_orgcode().setValue('100');
-                
+
                 mainController.getCGZJEJDQS_orgcode().setValue('100');
                 mainController.getCGZJEJDQS_startyearcode().setValue('2011');
                 mainController.getCGZJEJDQS_endyearcode().setValue('2011');

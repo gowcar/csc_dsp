@@ -1,49 +1,49 @@
 var XMSXSLTJ_Chart_options = {
-      chart: {
-         renderTo: 'XMSXSLTJ_Chart_chartContainer',
-         defaultSeriesType: 'column'
-      },
-      title: {
-         text: ''
-      },
-      xAxis: {
-         categories: []
-      },
-      yAxis: {
-         title: {
-            text: '数量(个)',
-            style: {
-               color: '#4572A7'
+    chart : {
+        renderTo : 'XMSXSLTJ_Chart_chartContainer',
+        defaultSeriesType : 'column'
+    },
+    title : {
+        text : ''
+    },
+    xAxis : [{
+        categories : []
+    }],
+    yAxis : {
+        title : {
+            text : '数量(个)',
+            style : {
+                color : '#4572A7'
             }
-         },
-         stackLabels: {
-            enabled: true,
-            style: {
-               fontWeight: 'bold',
-               color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+        },
+        stackLabels : {
+            enabled : true,
+            style : {
+                fontWeight : 'bold',
+                color : (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
             }
-         }
-      },
-      tooltip: {
-         formatter: function() {
-            return '<b>'+ this.x + '</b><br/>'+ this.y + '个';
-         }
-      },
-      plotOptions: {
-         column: {
-            stacking: 'normal',
-            dataLabels: {
-               enabled: true,
-               color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+        }
+    },
+    tooltip : {
+        formatter : function() {
+            return '<b>' + this.x + '</b><br/>' + this.y + '个';
+        }
+    },
+    plotOptions : {
+        column : {
+            stacking : 'normal',
+            dataLabels : {
+                enabled : true,
+                color : (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
             }
-         }
-      },
-      legend: {
-      	 enabled: false
-      },
-      series: [{
-         data:[]   
-      }]
+        }
+    },
+    legend : {
+        enabled : false
+    },
+    series : [{
+                data : []
+            }]
 };
 
 var XMSXSLZB_Chart_options = {
@@ -83,8 +83,9 @@ var XMSXSLZB_Chart_options = {
 };
 
 Ext.define('DataIntegration.view.PTYX_Chart', {
-           extend: 'Ext.Container',
-           xtype:'ptyx_chartview',
+            extend : 'Ext.Container',
+            xtype : 'ptyx_chartview',
+            loaded : false,
             config : {
                 layout : 'fit',
                 items : [{
@@ -115,7 +116,7 @@ Ext.define('DataIntegration.view.PTYX_Chart', {
                                                 }, {
                                                     html : '<div id="XMSXSLTJ_Chart_chartContainer"></div>'
                                                 }]
-                                    },{
+                                    }, {
                                         layout : 'fit',
                                         items : [{
                                                     xtype : 'toolbar',
@@ -140,21 +141,25 @@ Ext.define('DataIntegration.view.PTYX_Chart', {
                                     }]
                         }]
             },
-            refreshChart : function(toolbarHeight) {
-                setTimeout(function() {
-                            var chartWidth = Ext.getBody().getWidth() - 270;
-                            var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
+            switchPanel : function(toolbarHeight) {
+                var me = this;
+                if (me.loaded === false) {
+                    setTimeout(function() {
+                                var chartWidth = Ext.getBody().getWidth() - 270;
+                                var chartHeight = Ext.getBody().getHeight() - toolbarHeight - 135;
 
-                            $('#XMSXSLTJ_Chart_chartContainer').width(chartWidth);
-                            $('#XMSXSLTJ_Chart_chartContainer').height(chartHeight);                            
-                            
-                            $('#XMSXSLZB_Chart_chartContainer').width(chartWidth);
-                            $('#XMSXSLZB_Chart_chartContainer').height(chartHeight);
+                                $('#XMSXSLTJ_Chart_chartContainer').width(chartWidth);
+                                $('#XMSXSLTJ_Chart_chartContainer').height(chartHeight);
 
-                            var mainController = dspApp.getController('Main');
-                            mainController.onXMSXSLTJButtonTap.apply(mainController);
-                            mainController.onXMSXSLZBButtonTap.apply(mainController);
-                        }, 500);
+                                $('#XMSXSLZB_Chart_chartContainer').width(chartWidth);
+                                $('#XMSXSLZB_Chart_chartContainer').height(chartHeight);
+
+                                var mainController = dspApp.getController('Main');
+                                mainController.onXMSXSLTJButtonTap.apply(mainController);
+                                mainController.onXMSXSLZBButtonTap.apply(mainController);
+                                me.loaded = true;
+                            }, 500);
+                }
             },
             initialize : function() {
                 var mainController = dspApp.getController('Main');
