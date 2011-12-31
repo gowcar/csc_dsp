@@ -122,7 +122,7 @@ var CGJGDEDJPLL_Chart_options = {
 			      '95-99', '100 +'],
                 linkedTo : 0
             }],
-    yAxis : {
+    yAxis : [{
         title : {
             text : null
         },
@@ -133,7 +133,7 @@ var CGJGDEDJPLL_Chart_options = {
         },
         min : -40000000,
         max : 40000000
-    },
+    }],
 
     plotOptions : {
         series : {
@@ -171,7 +171,6 @@ var CGJGZDPLL_Chart_options = {
         categories : []
     }],
     yAxis : {
-        min : 0,
         title : {
             text : '偏离率 (％)'
         }
@@ -182,7 +181,7 @@ var CGJGZDPLL_Chart_options = {
         align : 'left',
         verticalAlign : 'top',
         x : 100,
-        y : 70,
+        y : 20,
         floating : true,
         shadow : true
     },
@@ -197,19 +196,7 @@ var CGJGZDPLL_Chart_options = {
             borderWidth : 0
         }
     },
-    series : [{
-                name : '圆钢',
-                data : []
-
-            }, {
-                name : '线材',
-                data : []
-
-            }, {
-                name : '螺纹钢',
-                data : []
-
-            }]
+    series : []
 };
 var CGJGPPWDXYD_Chart_options = {
     chart : {
@@ -488,6 +475,15 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                                                                 options : years,
                                                                 cls : 'toolbar_select'
                                                             }, {
+                                                                xtype : 'label',
+                                                                cls : 'toolbar_label',
+                                                                html : '材料名称'
+                                                            }, {
+                                                                xtype : 'selectfield',
+                                                                id : 'CGJGPPWDXND_materialclasscode',
+                                                                options : material_classes,
+                                                                cls : 'toolbar_select'
+                                                            }, {
                                                                 id : 'CGJGPPWDXND_action',
                                                                 ui : 'action',
                                                                 text : '统计'
@@ -549,5 +545,6 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
 
                 mainController.getCGJGPPWDXND_orgcode().setValue('100007');
                 mainController.getCGJGPPWDXND_yearcode().setValue('2011');
+                mainController.getCGJGPPWDXND_materialclasscode().setValue('100101');
             }
         });

@@ -16,6 +16,7 @@
 	<false/>
 	<key>ExternalHosts</key>
 	<array>
+		<string>jc.glodon.com</string>
 		<string>jc.cscec.com</string>
 	</array>
 	<key>MediaPlaybackRequiresUserAction</key>

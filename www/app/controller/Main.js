@@ -112,11 +112,14 @@ Ext.define('DataIntegration.controller.Main', {
                     }, {
                         ref : 'CGJGPPWDXND_yearcode',
                         selector : '#CGJGPPWDXND_yearcode'
+                    }, {
+                        ref : 'CGJGPPWDXND_materialclasscode',
+                        selector : '#CGJGPPWDXND_materialclasscode'
                     }],
             init : function() {
                 console.log('Init Main controller');
                 Ext.get(this.getMain().getEl().query('.login-btn')[0]).addListener('click', this.authorize, this);
-                // this.authorize();
+                //this.authorize();
                 this.control({
                             '#CGJGQS_action' : {
                                 tap : this.onCGJGQSButtonTap
@@ -624,46 +627,58 @@ Ext.define('DataIntegration.controller.Main', {
                 if (!isEmpty(DataIntegration.CGJGDEDJDB_Chart)) {
                     DataIntegration.CGJGDEDJDB_Chart.showLoading();
                 }
-                var title = CGJGDEDJDB_materialclass + '采购价格和定额单价对比分析图';
-                var subtitle = this.getCGJGDEDJDB_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJDB_yearcode + '年度)';
-                var categories = [];
-                var sdata1 = [];
-                var sdata2 = [];
-                var sdata3 = [];
-                for (var i = 0; i < 12; i++) {
-                    sdata1.push(Math.random() * 200);
-                    sdata2.push(Math.random() * 20);
-                    sdata3.push(Math.random() * 15);
-                    var month = null;
-                    if (i < 9) {
-                        month = '' + CGJGDEDJDB_yearcode + '.0' + (i + 1);
-                    } else {
-                        month = '' + CGJGDEDJDB_yearcode + '.' + (i + 1);
-                    }
-                    categories.push(month);
-                }
-
-                if (isEmpty(DataIntegration.CGJGDEDJDB_Chart)) {
-                    CGJGDEDJDB_Chart_options.title.text = title;
-                    CGJGDEDJDB_Chart_options.subtitle.text = subtitle;
-                    CGJGDEDJDB_Chart_options.xAxis[0].categories = categories;
-                    CGJGDEDJDB_Chart_options.series[0].data = sdata1;
-                    CGJGDEDJDB_Chart_options.series[1].data = sdata2;
-                    CGJGDEDJDB_Chart_options.series[2].data = sdata3;
-                    DataIntegration.CGJGDEDJDB_Chart = new Highcharts.Chart(CGJGDEDJDB_Chart_options);
-                } else {
-                    DataIntegration.CGJGDEDJDB_Chart.setTitle({
-                                text : title
-                            }, {
-                                text : subtitle
-                            });
-                    DataIntegration.CGJGDEDJDB_Chart.xAxis[0].setCategories(categories, false);
-                    DataIntegration.CGJGDEDJDB_Chart.series[0].setData(sdata1, false);
-                    DataIntegration.CGJGDEDJDB_Chart.series[1].setData(sdata2, false);
-                    DataIntegration.CGJGDEDJDB_Chart.series[2].setData(sdata3, false);
-                    DataIntegration.CGJGDEDJDB_Chart.redraw();
-                    DataIntegration.CGJGDEDJDB_Chart.hideLoading();
-                }
+                Ext.util.JSONP.request({
+                            url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialPriceContrastAnalysisJson.do',
+                            params : {
+                                "graphVO.orgcode" : CGJGDEDJDB_orgcode,
+                                "graphVO.year" : CGJGDEDJDB_yearcode,
+                                "graphVO.materialdesc" : CGJGDEDJDB_materialclass
+                            },
+                            callbackKey : 'jsonpcallback',
+                            callback : function(datas) {
+                                var title = CGJGDEDJDB_materialclass + '采购价格和定额单价对比分析图';
+                                var subtitle = this.getCGJGDEDJDB_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJDB_yearcode + '年度)';
+                                var categories = [];
+				                var sdata1 = [];
+				                var sdata2 = [];
+				                var sdata3 = [];
+				                for (var idx in datas) {
+				                	var data = datas[idx];
+				                    sdata1.push(data.purchaseamount);
+				                    sdata2.push(data.purchaseprice);
+				                    sdata3.push(data.fixedprice);
+				                    var month = null;
+				                    if (data.month < 10) {
+				                        month = '' + data.year + '.0' + data.month;
+				                    } else {
+				                        month = '' + data.year + '.' + data.month;
+				                    }
+				                    categories.push(month);
+				                }
+                                if (isEmpty(DataIntegration.CGJGDEDJDB_Chart)) {
+				                    CGJGDEDJDB_Chart_options.title.text = title;
+				                    CGJGDEDJDB_Chart_options.subtitle.text = subtitle;
+				                    CGJGDEDJDB_Chart_options.xAxis[0].categories = categories;
+				                    CGJGDEDJDB_Chart_options.series[0].data = sdata1;
+				                    CGJGDEDJDB_Chart_options.series[1].data = sdata2;
+				                    CGJGDEDJDB_Chart_options.series[2].data = sdata3;
+				                    DataIntegration.CGJGDEDJDB_Chart = new Highcharts.Chart(CGJGDEDJDB_Chart_options);
+				                } else {
+				                    DataIntegration.CGJGDEDJDB_Chart.setTitle({
+				                                text : title
+				                            }, {
+				                                text : subtitle
+				                            });
+				                    DataIntegration.CGJGDEDJDB_Chart.xAxis[0].setCategories(categories, false);
+				                    DataIntegration.CGJGDEDJDB_Chart.series[0].setData(sdata1, false);
+				                    DataIntegration.CGJGDEDJDB_Chart.series[1].setData(sdata2, false);
+				                    DataIntegration.CGJGDEDJDB_Chart.series[2].setData(sdata3, false);
+				                    DataIntegration.CGJGDEDJDB_Chart.redraw();
+				                    DataIntegration.CGJGDEDJDB_Chart.hideLoading();
+				                }
+                            },
+                            scope : this
+                        });
             },
 
             /* 材料采购价格和定额单价偏离率分析图 */
@@ -674,6 +689,55 @@ Ext.define('DataIntegration.controller.Main', {
                 if (!isEmpty(DataIntegration.CGJGDEDJPLL_Chart)) {
                     DataIntegration.CGJGDEDJPLL_Chart.showLoading();
                 }
+                /*
+                Ext.util.JSONP.request({
+                    url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialPriceDeviateAnalysisJson.do',
+                    params : {
+                        "graphVO.orgcode" : CGJGDEDJPLL_orgcode,
+                        "graphVO.year" : CGJGDEDJPLL_yearcode,
+                        "graphVO.materialdesc" : CGJGDEDJPLL_materialclass
+                    },
+                    callbackKey : 'jsonpcallback',
+                    callback : function(datas) {
+                        var title = CGJGDEDJPLL_materialclass + '采购价格和定额单价对比分析图';
+                        var subtitle = this.getCGJGDEDJPLL_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJPLL_yearcode + '年度)';
+                        var categories = [];
+		                var sdata1 = [];
+		                var sdata2 = [];
+		                var minValue = datas[0].min;
+		                var maxValue = datas[0].max;
+		                for (var idx in datas[0].data) {
+		                	var data = datas[0].data[idx];
+		                    sdata1.push(data.smallValue);
+		                    sdata2.push(data.bigValue);
+		                    categories.push(data.scope);
+		                }
+                        if (isEmpty(DataIntegration.CGJGDEDJPLL_Chart)) {
+		                    CGJGDEDJPLL_Chart_options.title.text = title;
+		                    CGJGDEDJPLL_Chart_options.subtitle.text = subtitle;
+		                    CGJGDEDJPLL_Chart_options.yAxis[0].min = minValue;
+		                    CGJGDEDJPLL_Chart_options.yAxis[0].max = maxValue;
+		                    CGJGDEDJPLL_Chart_options.series[0].data = sdata1;
+		                    CGJGDEDJPLL_Chart_options.series[1].data = sdata2;
+		                    DataIntegration.CGJGDEDJPLL_Chart = new Highcharts.Chart(CGJGDEDJPLL_Chart_options);
+		                } else {
+		                    DataIntegration.CGJGDEDJPLL_Chart.setTitle({
+		                                text : title
+		                            }, {
+		                                text : subtitle
+		                            });
+		                    DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].min = minValue;
+		                    DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].max = maxValue;        
+		                    DataIntegration.CGJGDEDJPLL_Chart.series[0].setData(sdata1, false);
+		                    DataIntegration.CGJGDEDJPLL_Chart.series[1].setData(sdata2, false);
+		                    DataIntegration.CGJGDEDJPLL_Chart.redraw();
+		                    DataIntegration.CGJGDEDJPLL_Chart.hideLoading();
+		                }
+                    },
+                    scope : this
+                });
+                */
+                        
                 var title = CGJGDEDJPLL_materialclass + '采购价格和定额单价偏离率分析图';
                 var subtitle = this.getCGJGDEDJPLL_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJPLL_yearcode + '年度)';
                 var sdata1 = [];
@@ -709,46 +773,64 @@ Ext.define('DataIntegration.controller.Main', {
                 if (!isEmpty(DataIntegration.CGJGZDPLL_Chart)) {
                     DataIntegration.CGJGZDPLL_Chart.showLoading();
                 }
-                var title = '材料价格最大偏离率统计图';
-                var subtitle = this.getCGJGZDPLL_orgcode().record.data.text + '股份有限公司(' + CGJGZDPLL_yearcode + '年度)';
-                var sdata1 = [];
-                var sdata2 = [];
-                var sdata3 = [];
-                var categories = [];
-                for (var i = 0; i < 12; i++) {
-                    sdata1.push(Math.random() * 200);
-                    sdata2.push(Math.random() * 150);
-                    sdata3.push(Math.random() * 60);
-                    var month = null;
-                    if (i < 9) {
-                        month = '' + CGJGZDPLL_yearcode + '.0' + (i + 1);
-                    } else {
-                        month = '' + CGJGZDPLL_yearcode + '.' + (i + 1);
-                    }
-                    categories.push(month);
-                }
-
-                if (isEmpty(DataIntegration.CGJGZDPLL_Chart)) {
-                    CGJGZDPLL_Chart_options.title.text = title;
-                    CGJGZDPLL_Chart_options.subtitle.text = subtitle;
-                    CGJGZDPLL_Chart_options.xAxis[0].categories = categories;
-                    CGJGZDPLL_Chart_options.series[0].data = sdata1;
-                    CGJGZDPLL_Chart_options.series[1].data = sdata2;
-                    CGJGZDPLL_Chart_options.series[2].data = sdata3;
-                    DataIntegration.CGJGZDPLL_Chart = new Highcharts.Chart(CGJGZDPLL_Chart_options);
-                } else {
-                    DataIntegration.CGJGZDPLL_Chart.setTitle({
-                                text : title
-                            }, {
-                                text : subtitle
-                            });
-                    DataIntegration.CGJGZDPLL_Chart.xAxis[0].setCategories(categories, false);
-                    DataIntegration.CGJGZDPLL_Chart.series[0].setData(sdata1, false);
-                    DataIntegration.CGJGZDPLL_Chart.series[1].setData(sdata2, false);
-                    DataIntegration.CGJGZDPLL_Chart.series[2].setData(sdata3, false);
-                    DataIntegration.CGJGZDPLL_Chart.redraw();
-                    DataIntegration.CGJGZDPLL_Chart.hideLoading();
-                }
+                Ext.util.JSONP.request({
+                    url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!maxMaterialPriceDeviateJson.do',
+                    params : {
+                        "graphVO.orgcode" : CGJGZDPLL_orgcode,
+                        "graphVO.year" : CGJGZDPLL_yearcode
+                    },
+                    callbackKey : 'jsonpcallback',
+                    callback : function(datas) {
+                        var title = '材料价格最大偏离率统计图';
+                		var subtitle = this.getCGJGZDPLL_orgcode().record.data.text + '股份有限公司(' + CGJGZDPLL_yearcode + '年度)';
+                        var categories = [];
+                        var sValue = [];
+                        var categoriesLoad = false;
+		                for (var idx in datas) {
+		                	var data = datas[idx];
+		                	var newData = {"name":data.material, "data":[]};
+		                	for(var idx2 in data.values){
+		                		newData.data.push(parseFloat(data.values[idx2].value));
+								if(!categoriesLoad){		                		
+			                		var month = null;
+				                    if (data.values[idx2].month < 10) {
+				                        month = '' + data.values[idx2].year + '.0' + data.values[idx2].month;
+				                    } else {
+				                        month = '' + data.values[idx2].year + '.' + data.values[idx2].month;
+				                    }
+				                    categories.push(month);
+								}
+		                	}
+		                	categoriesLoad = true;
+		                	sValue.push(newData);
+		                }
+                        if (isEmpty(DataIntegration.CGJGZDPLL_Chart)) {
+		                    CGJGZDPLL_Chart_options.title.text = title;
+		                    CGJGZDPLL_Chart_options.subtitle.text = subtitle;
+		                    CGJGZDPLL_Chart_options.xAxis[0].categories = categories;
+		                    for(var i=0;i<sValue.length;i++){
+		                    	CGJGZDPLL_Chart_options.series[i] = {};
+		                    	CGJGZDPLL_Chart_options.series[i].name = sValue[i].name;
+		                    	CGJGZDPLL_Chart_options.series[i].data = sValue[i].data;
+		                    }
+		                    DataIntegration.CGJGZDPLL_Chart = new Highcharts.Chart(CGJGZDPLL_Chart_options);
+		                } else {
+		                    DataIntegration.CGJGZDPLL_Chart.setTitle({
+		                                text : title
+		                            }, {
+		                                text : subtitle
+		                            });
+		                    DataIntegration.CGJGZDPLL_Chart.xAxis[0].setCategories(categories, false);
+		                    for(var i=0;i<sValue.length;i++){
+		                    	DataIntegration.CGJGZDPLL_Chart.series[i].name = sValue[i].name;
+		                    	DataIntegration.CGJGZDPLL_Chart.series[i].setData(sValue[i].data, false);
+		                    }
+		                    DataIntegration.CGJGZDPLL_Chart.redraw();
+		                    DataIntegration.CGJGZDPLL_Chart.hideLoading();
+		                }
+                    },
+                    scope : this
+                });
             },
 
             /* 材料价格品牌稳定性分析图 */
@@ -804,9 +886,53 @@ Ext.define('DataIntegration.controller.Main', {
             onCGJGPPWDXNDButtonTap : function() {
                 var CGJGPPWDXND_orgcode = this.getCGJGPPWDXND_orgcode().getValue();
                 var CGJGPPWDXND_yearcode = this.getCGJGPPWDXND_yearcode().getValue();
+                var CGJGPPWDXND_materialclass = this.getCGJGPPWDXND_materialclasscode().record.data.text;
                 if (!isEmpty(DataIntegration.CGJGPPWDXND_Chart)) {
                     DataIntegration.CGJGPPWDXND_Chart.showLoading();
                 }
+                Ext.util.JSONP.request({
+                    url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialBrandPriceYearAnalysisJson.do',
+                    params : {
+                        "graphVO.orgcode" : CGJGPPWDXND_orgcode,
+                        "graphVO.materialdesc" : CGJGPPWDXND_materialclass,
+                        "graphVO.year" : CGJGPPWDXND_yearcode
+                    },
+                    callbackKey : 'jsonpcallback',
+                    callback : function(datas) {
+                        var title = this.getCGJGPPWDXND_materialclasscode().record.data.text + '材料价格品牌稳定性分析图－年度分析';
+                		var subtitle = this.getCGJGPPWDXND_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXND_yearcode + '年度)';
+                        var categories = [];
+                        var sdata1 = [];
+                        var sdata2 = [];
+                        var categoriesLoad = false;
+		                for (var idx in datas) {
+		                	var data = datas[idx];
+		                	categories.push(data.brand);
+		                	sdata1.push(data.minvalue);
+		                	sdata2.push(data.maxvalue);
+		                }
+                        if (isEmpty(DataIntegration.CGJGPPWDXND_Chart)) {
+		                    CGJGPPWDXND_Chart_options.title.text = title;
+		                    CGJGPPWDXND_Chart_options.subtitle.text = subtitle;
+		                    CGJGPPWDXND_Chart_options.series[0].data = sdata1;
+		                    CGJGPPWDXND_Chart_options.series[1].data = sdata2;
+		                    DataIntegration.CGJGPPWDXND_Chart = new Highcharts.Chart(CGJGPPWDXND_Chart_options);
+		                } else {
+		                    DataIntegration.CGJGPPWDXND_Chart.setTitle({
+		                                text : title
+		                            }, {
+		                                text : subtitle
+		                            });
+		                    DataIntegration.CGJGPPWDXND_Chart.series[0].setData(sdata1, false);
+		                    DataIntegration.CGJGPPWDXND_Chart.series[1].setData(sdata2, false);
+		                    DataIntegration.CGJGPPWDXND_Chart.redraw();
+		                    DataIntegration.CGJGPPWDXND_Chart.hideLoading();
+		                }
+                    },
+                    scope : this
+                });
+                
+                /*
                 var title = '材料价格品牌稳定性分析图－年度分析';
                 var subtitle = this.getCGJGPPWDXND_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXND_yearcode + '年度)';
                 var sdata1 = [];
@@ -833,6 +959,7 @@ Ext.define('DataIntegration.controller.Main', {
                     DataIntegration.CGJGPPWDXND_Chart.redraw();
                     DataIntegration.CGJGPPWDXND_Chart.hideLoading();
                 }
+                */
             },
 
             onLeafTap : function(list, index) {
