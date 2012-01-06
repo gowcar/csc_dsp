@@ -239,19 +239,7 @@ var CGJGPPWDXYD_Chart_options = {
             borderWidth : 0
         }
     },
-    series : [{
-                name : '鞍钢',
-                data : []
-
-            }, {
-                name : '宝钢',
-                data : []
-
-            }, {
-                name : '邯郸钢铁',
-                data : []
-
-            }]
+    series : []
 };
 
 var CGJGPPWDXND_Chart_options = {
@@ -425,7 +413,7 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                                         items : [{
                                                     xtype : 'toolbar',
                                                     docked : 'top',
-                                                    items : [{
+                                                 items : [  {
                                                                 xtype : 'label',
                                                                 cls : 'toolbar_label',
                                                                 html : '组织机构'
@@ -442,6 +430,15 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGPPWDXYD_yearcode',
                                                                 options : years,
+                                                                cls : 'toolbar_select'
+                                                            }, {
+                                                                xtype : 'label',
+                                                                cls : 'toolbar_label',
+                                                                html : '材料名称'
+                                                            }, {
+                                                                xtype : 'selectfield',
+                                                                id : 'CGJGPPWDXYD_materialclasscode',
+                                                                options : material_classes,
                                                                 cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGJGPPWDXYD_action',
@@ -542,6 +539,7 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                 
                 mainController.getCGJGPPWDXYD_orgcode().setValue('100007');
                 mainController.getCGJGPPWDXYD_yearcode().setValue('2011');
+                mainController.getCGJGPPWDXYD_materialclasscode().setValue('100101');
 
                 mainController.getCGJGPPWDXND_orgcode().setValue('100007');
                 mainController.getCGJGPPWDXND_yearcode().setValue('2011');
