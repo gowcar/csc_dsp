@@ -177,6 +177,8 @@ Ext.define('DataIntegration.controller.Main', {
 	onLaunch : function() {
 		console.log('onLaunch Main controller');
 	},
+	
+	reqURLPref: 'http://jc.glodon.com:9000',
 	/* 材料采购价格统计图 */
 	onCGJGQSButtonTap : function() {
 		var CGJGQS_orgcode = this.getCGJGQS_orgcode().getValue();
@@ -185,41 +187,45 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGJGQS_Chart)) {
 			DataIntegration.CGJGQS_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getYearEBillDetailJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGQS_orgcode,
-				"graphVO.year" : CGJGQS_yearcode,
-				"graphVO.materialdesc" : CGJGQS_materialclass
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
-				var title = CGJGQS_materialclass + '材料采购价格统计图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
-				var categories = [];
-				var sdata = [];
-				for(var idx in datas) {
-					var data = datas[idx];
-					categories.push(data.year + '-' + data.month);
-					sdata.push(parseFloat(data.result));
-				}
-				if(isEmpty(DataIntegration.CGJGQS_Chart)) {
-					CGJGQS_Chart_options.title.text = title;
-					CGJGQS_Chart_options.xAxis[0].categories = categories;
-					CGJGQS_Chart_options.series[0].data = sdata;
-					DataIntegration.CGJGQS_Chart = new Highcharts.Chart(CGJGQS_Chart_options);
-				} else {
-					DataIntegration.CGJGQS_Chart.setTitle({
-						text : title
-					});
-					DataIntegration.CGJGQS_Chart.xAxis[0].setCategories(categories, false);
-					DataIntegration.CGJGQS_Chart.series[0].setData(sdata, false);
-					DataIntegration.CGJGQS_Chart.redraw();
-					DataIntegration.CGJGQS_Chart.hideLoading();
-				}
-
-			},
-			scope : this
-		});
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearEBillDetailJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGQS_orgcode,
+					"graphVO.year" : CGJGQS_yearcode,
+					"graphVO.materialdesc" : CGJGQS_materialclass
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = CGJGQS_materialclass + '材料采购价格统计图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.year + '-' + data.month);
+						sdata.push(parseFloat(data.result));
+					}
+					if(isEmpty(DataIntegration.CGJGQS_Chart)) {
+						CGJGQS_Chart_options.title.text = title;
+						CGJGQS_Chart_options.xAxis[0].categories = categories;
+						CGJGQS_Chart_options.series[0].data = sdata;
+						DataIntegration.CGJGQS_Chart = new Highcharts.Chart(CGJGQS_Chart_options);
+					} else {
+						DataIntegration.CGJGQS_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CGJGQS_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGJGQS_Chart.series[0].setData(sdata, false);
+						DataIntegration.CGJGQS_Chart.redraw();
+						DataIntegration.CGJGQS_Chart.hideLoading();
+					}
+	
+				},
+				scope : this
+			});
+		} else {
+			
+		}
 	},
 	/* 材料数量Top10 */
 	onCLSLT10ButtonTap : function() {
@@ -228,7 +234,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CLSLT10_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!topMaterialClassNumJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassNumJson.do',
 			params : {
 				"graphVO.orgcode" : CLSLT10_orgcode
 			},
@@ -267,7 +273,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CLSLZB_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
 			params : {
 				"graphVO.orgcode" : CLSLZB_orgcode
 			},
@@ -304,7 +310,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGZJEQS_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
 			params : {
 				"graphVO.orgcode" : CGZJEQS_orgcode,
 				"graphVO.year" : CGZJEQS_yearcode
@@ -346,7 +352,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGZJEZB_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
 			params : {
 				"graphVO.orgcode" : CGZJEZB_orgcode,
 				"graphVO.year" : CGZJEZB_yearcode
@@ -383,7 +389,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGZJEYDQS_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
 			params : {
 				"graphVO.orgcode" : CGZJEYDQS_orgcode
 			},
@@ -425,7 +431,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGZJEJDQS_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
 			params : {
 				"graphVO.orgcode" : CGZJEJDQS_orgcode,
 				"graphVO.startyear" : CGZJEJDQS_startyearcode,
@@ -466,7 +472,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.GYSSLTJ_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getSupplierNumJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierNumJson.do',
 			params : {
 				"graphVO.orgcode" : GYSSLTJ_orgcode
 			},
@@ -506,7 +512,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.GYSSLZB_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
 			params : {
 				"graphVO.orgcode" : GYSSLZB_orgcode
 			},
@@ -541,7 +547,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.XMSXSLTJ_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getProjectNumJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectNumJson.do',
 			params : {
 				"graphVO.orgcode" : XMSXSLTJ_orgcode
 			},
@@ -581,7 +587,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.XMSXSLZB_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.cscec.com/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
 			params : {
 				"graphVO.orgcode" : XMSXSLZB_orgcode
 			},
@@ -618,7 +624,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGJGDEDJDB_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialPriceContrastAnalysisJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceContrastAnalysisJson.do',
 			params : {
 				"graphVO.orgcode" : CGJGDEDJDB_orgcode,
 				"graphVO.year" : CGJGDEDJDB_yearcode,
@@ -679,7 +685,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGJGDEDJPLL_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialPriceDeviateAnalysisJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceDeviateAnalysisJson.do',
 			params : {
 				"graphVO.orgcode" : CGJGDEDJPLL_orgcode,
 				"graphVO.year" : CGJGDEDJPLL_yearcode,
@@ -687,22 +693,34 @@ Ext.define('DataIntegration.controller.Main', {
 			},
 			callbackKey : 'jsonpcallback',
 			callback : function(datas) {
-				var title = CGJGDEDJPLL_materialclass + '采购价格和定额单价对比分析图';
+				var title = CGJGDEDJPLL_materialclass + '材料采购价格和定额单价偏离率分析图';
 				var subtitle = this.getCGJGDEDJPLL_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJPLL_yearcode + '年度)';
 				var categories = [];
 				var sdata1 = [];
 				var sdata2 = [];
-				var minValue = -2000000;
-				var maxValue = 2000000;
+				var minValue = -220000000;
+				var maxValue = 220000000;
+				var maxAbs = 0;
 				for(var idx in datas) {
 					var data = datas[idx];
 					sdata1.push(parseFloat(data.smallvalue));
 					sdata2.push(parseFloat(data.bigvalue));
-					categories.push(data.scope);
+					categories.push(data.step);
+					//if(Math.abs(parseFloat(data.smallvalue))>maxAbs){
+					//	maxAbs = Math.abs(parseFloat(data.smallvalue));
+					//}
+					//if(Math.abs(parseFloat(data.bigvalue))>maxAbs){
+					//	maxAbs = Math.abs(parseFloat(data.bigvalue));
+					//}
 				}
+				//var minValue = -(maxAbs + 10000000);
+				//var maxValue = maxAbs + 10000000;
+				
 				if(isEmpty(DataIntegration.CGJGDEDJPLL_Chart)) {
 					CGJGDEDJPLL_Chart_options.title.text = title;
 					CGJGDEDJPLL_Chart_options.subtitle.text = subtitle;
+					CGJGDEDJPLL_Chart_options.xAxis[0].categories = categories;
+					CGJGDEDJPLL_Chart_options.xAxis[1].categories = categories;
 					CGJGDEDJPLL_Chart_options.yAxis[0].min = minValue;
 					CGJGDEDJPLL_Chart_options.yAxis[0].max = maxValue;
 					CGJGDEDJPLL_Chart_options.series[0].data = sdata1;
@@ -714,6 +732,8 @@ Ext.define('DataIntegration.controller.Main', {
 					}, {
 						text : subtitle
 					});
+					DataIntegration.CGJGDEDJPLL_Chart.xAxis[0].setCategories(categories, false);
+					DataIntegration.CGJGDEDJPLL_Chart.xAxis[1].setCategories(categories, false);
 					DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].min = minValue;
 					DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].max = maxValue;
 					DataIntegration.CGJGDEDJPLL_Chart.series[0].setData(sdata1, false);
@@ -762,7 +782,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGJGZDPLL_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!maxMaterialPriceDeviateJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!maxMaterialPriceDeviateJson.do',
 			params : {
 				"graphVO.orgcode" : CGJGZDPLL_orgcode,
 				"graphVO.year" : CGJGZDPLL_yearcode
@@ -833,7 +853,7 @@ Ext.define('DataIntegration.controller.Main', {
 		}
 
 		Ext.util.JSONP.request({
-			url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialBrandPriceMonthAnalysisJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceMonthAnalysisJson.do',
 			params : {
 				"graphVO.orgcode" : CGJGPPWDXYD_orgcode,
 				"graphVO.materialdesc" : CGJGPPWDXYD_materialclass,
@@ -847,11 +867,14 @@ Ext.define('DataIntegration.controller.Main', {
 				var sdata = [];
 				var categoriesLoad = false;
 				for(var idx in datas) {
+					if(idx > 3){
+						break;
+					}
 					var data = datas[idx];
 					var newData = {"name":data.brand,"data":[]};
 					for(var idx2 in data.values){
 						var data2 = data.values[idx2];
-						newData.data.push(parseFloat(data2.value));
+						newData.data.push(Math.abs(parseFloat(data2.value)));
 						if(!categoriesLoad){
 							var month = null;
 							if(data2.month < 10) {
@@ -868,7 +891,12 @@ Ext.define('DataIntegration.controller.Main', {
 				if(isEmpty(DataIntegration.CGJGPPWDXYD_Chart)) {
 					CGJGPPWDXYD_Chart_options.title.text = title;
 					CGJGPPWDXYD_Chart_options.subtitle.text = subtitle;
-					CGJGPPWDXYD_Chart_options.series = sdata;
+					CGJGPPWDXYD_Chart_options.xAxis[0].categories = categories;
+					for(var i = 0; i < sdata.length; i++) {
+						CGJGPPWDXYD_Chart_options.series[i] = {};
+						CGJGPPWDXYD_Chart_options.series[i].name = sdata[i].name;
+						CGJGPPWDXYD_Chart_options.series[i].data = sdata[i].data;
+					}
 					DataIntegration.CGJGPPWDXYD_Chart = new Highcharts.Chart(CGJGPPWDXYD_Chart_options);
 				} else {
 					DataIntegration.CGJGPPWDXYD_Chart.setTitle({
@@ -876,12 +904,13 @@ Ext.define('DataIntegration.controller.Main', {
 					}, {
 						text : subtitle
 					});
-					for(var i = 0; i < sValue.length; i++) {
+					DataIntegration.CGJGPPWDXYD_Chart.xAxis[0].setCategories(categories, false);
+					for(var i = 0; i < sdata.length; i++) {
 						DataIntegration.CGJGPPWDXYD_Chart.series[i].name = sdata[i].name;
 						DataIntegration.CGJGPPWDXYD_Chart.series[i].setData(sdata[i].data, false);
 					}
-					DataIntegration.CGJGPPWDXND_Chart.redraw();
-					DataIntegration.CGJGPPWDXND_Chart.hideLoading();
+					DataIntegration.CGJGPPWDXYD_Chart.redraw();
+					DataIntegration.CGJGPPWDXYD_Chart.hideLoading();
 				}
 			},
 			scope : this
@@ -939,7 +968,7 @@ Ext.define('DataIntegration.controller.Main', {
 			DataIntegration.CGJGPPWDXND_Chart.showLoading();
 		}
 		Ext.util.JSONP.request({
-			url : 'http://jc.glodon.com:9000/managementjson/statistic/graphJson!materialBrandPriceYearAnalysisJson.do',
+			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceYearAnalysisJson.do',
 			params : {
 				"graphVO.orgcode" : CGJGPPWDXND_orgcode,
 				"graphVO.materialdesc" : CGJGPPWDXND_materialclass,
@@ -962,6 +991,7 @@ Ext.define('DataIntegration.controller.Main', {
 				if(isEmpty(DataIntegration.CGJGPPWDXND_Chart)) {
 					CGJGPPWDXND_Chart_options.title.text = title;
 					CGJGPPWDXND_Chart_options.subtitle.text = subtitle;
+					CGJGPPWDXND_Chart_options.xAxis[0].categories = categories;
 					CGJGPPWDXND_Chart_options.series[0].data = sdata1;
 					CGJGPPWDXND_Chart_options.series[1].data = sdata2;
 					DataIntegration.CGJGPPWDXND_Chart = new Highcharts.Chart(CGJGPPWDXND_Chart_options);
@@ -971,6 +1001,7 @@ Ext.define('DataIntegration.controller.Main', {
 					}, {
 						text : subtitle
 					});
+					DataIntegration.CGJGPPWDXND_Chart.xAxis[0].setCategories(categories, false);
 					DataIntegration.CGJGPPWDXND_Chart.series[0].setData(sdata1, false);
 					DataIntegration.CGJGPPWDXND_Chart.series[1].setData(sdata2, false);
 					DataIntegration.CGJGPPWDXND_Chart.redraw();
@@ -1115,6 +1146,7 @@ Ext.define('DataIntegration.controller.Main', {
 			fakeResult.push({
 				result : 'success'
 			});
+			//dataIntegrationLauncher.useNetwork = false;
 		} else {
 			fakeResult.push({
 				result : 'fail'

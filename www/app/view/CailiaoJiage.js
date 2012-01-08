@@ -11,7 +11,7 @@ var CGJGQS_Chart_options = {
             }],
     yAxis : {
         title : {
-            text : '金额（千万）',
+            text : '采购价格（元）',
             style : {
                 color : '#4572A7'
             }
@@ -28,7 +28,7 @@ var CGJGQS_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + toDecimal(this.y) + '千万';
+            return '日期：' + this.x + '<br/>平均价格：' + toDecimal(this.y) + '元';
         }
     },
     legend : {
@@ -52,7 +52,7 @@ var CLSLT10_Chart_options = {
     }],
     yAxis : {
         title : {
-            text : '数量(千万)',
+            text : '数量',
             style : {
                 color : '#4572A7'
             }
@@ -67,7 +67,7 @@ var CLSLT10_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + this.y + '千万';
+            return '类别：' + this.x + '<br/>数量：' + this.y;
         }
     },
     plotOptions : {

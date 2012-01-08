@@ -26,7 +26,7 @@ var XMSXSLTJ_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + this.y + '个';
+            return '单位：' + this.x + '<br/>项目上线个数：' + this.y + '个';
         }
     },
     plotOptions : {

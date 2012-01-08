@@ -14,14 +14,14 @@ var CGJGDEDJDB_Chart_options = {
     yAxis : [{ // Primary yAxis
         labels : {
             formatter : function() {
-                return this.value;
+                return this.value + "元";
             },
             style : {
                 color : '#89A54E'
             }
         },
         title : {
-            text : '采购单价',
+            text : '单价',
             style : {
                 color : '#89A54E'
             }
@@ -35,32 +35,23 @@ var CGJGDEDJDB_Chart_options = {
                 },
                 labels : {
                     formatter : function() {
-                        return this.value + '千万';
+                        return this.value/1000000 + '百万';
                     },
                     style : {
                         color : '#4572A7'
                     }
                 },
                 opposite : true
-            }, { // Third yAxis
-                title : {
-                    text : '定额单价',
-                    style : {
-                        color : '#4572A7'
-                    }
-                },
-                labels : {
-                    formatter : function() {
-                        return this.value;
-                    },
-                    style : {
-                        color : '#66FFFF'
-                    }
-                }
             }],
     tooltip : {
         formatter : function() {
-            return '' + this.x + ': ' + this.y;
+        	if(this.series.name === '采购金额'){
+        		return '采购月份:' + this.x + '<br/>采购金额:'+ toDecimal(this.y/1000000) + '百万';
+        	} else if(this.series.name === '采购单价'){
+        		return '采购月份:' + this.x + '<br/>采购单价:' + toDecimal(this.y) + '元';
+        	} else if(this.series.name === '定额单价'){
+        		return '采购月份:' + this.x + '<br/>定额单价:' + toDecimal(this.y) + '元';
+        	}
         }
     },
     legend : {
@@ -89,7 +80,7 @@ var CGJGDEDJDB_Chart_options = {
                 name : '定额单价',
                 color : '#66FFFF',
                 type : 'spline',
-                yAxis : 2,
+                yAxis : 0,
                 data : []
             }]
 };
@@ -143,7 +134,7 @@ var CGJGDEDJPLL_Chart_options = {
 
     tooltip : {
         formatter : function() {
-            return '<b>' + this.series.name + ', ' + this.point.category + '</b><br/>' + toDecimal(this.point.y);
+            return '<b>单价偏离百分率区间：(' + this.series.name +')'+ this.point.category + '</b><br/>采购金额：' + Math.abs(toDecimal(this.point.y/1000000))+'百万';
         }
     },
 
@@ -187,7 +178,7 @@ var CGJGZDPLL_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '' + this.x + ': ' + toDecimal(this.y);
+            return '类别：' + this.series.name + '<br/>月份：' + this.x + '<br/>最大偏离率： ' + toDecimal(this.y);
         }
     },
     plotOptions : {
@@ -213,7 +204,6 @@ var CGJGPPWDXYD_Chart_options = {
         categories : []
     }],
     yAxis : {
-        min : 0,
         title : {
             text : '偏离率 (％)'
         }
@@ -230,7 +220,7 @@ var CGJGPPWDXYD_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '' + this.x + ': ' + toDecimal(this.y);
+            return '品牌：' + this.series.name + '<br/>月份：' + this.x + '<br/>月度平均偏离率: ' + toDecimal(this.y);
         }
     },
     plotOptions : {
@@ -245,7 +235,7 @@ var CGJGPPWDXYD_Chart_options = {
 var CGJGPPWDXND_Chart_options = {
     chart : {
         renderTo : 'CGJGPPWDXND_Chart_chartContainer',
-        defaultSeriesType : 'bar'
+        defaultSeriesType : 'column'
     },
     title : {
         text : '材料价格品牌稳定性分析图－年度分析'
@@ -253,11 +243,10 @@ var CGJGPPWDXND_Chart_options = {
     subtitle : {
         text : ''
     },
-    xAxis : {
-        categories : ['宝钢', '鞍钢', '邯郸钢铁', '武钢', '沙钢']
-    },
+    xAxis : [{
+        categories : []
+    }],
     yAxis : {
-        min : 0,
         title : {
             text : '偏离率(％)'
         }
@@ -268,19 +257,20 @@ var CGJGPPWDXND_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '' + this.series.name + ': ' + toDecimal(this.y) + '';
+            return '品牌：' + this.x + '<br/>' + this.series.name + ': ' + toDecimal(this.y) + '';
         }
     },
     plotOptions : {
-        series : {
-            stacking : 'normal'
+        column : {
+            pointPadding : 0.2,
+            borderWidth : 0
         }
     },
     series : [{
-                name : '最大',
+                name : '最小偏离',
                 data : [5, 3, 4, 7, 2]
             }, {
-                name : '最小',
+                name : '最大偏离',
                 data : [2, 2, 3, 2, 1]
             }]
 };
@@ -327,7 +317,7 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                                                             }, {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGDEDJDB_materialclasscode',
-                                                                options : material_classes,
+                                                                options : material_classes_CGJGDEDJDB,
                                                                 cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGJGDEDJDB_action',
@@ -367,7 +357,7 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                                                             }, {
                                                                 xtype : 'selectfield',
                                                                 id : 'CGJGDEDJPLL_materialclasscode',
-                                                                options : material_classes,
+                                                                options : material_classes_CGJGDEDJDB,
                                                                 cls : 'toolbar_select'
                                                             }, {
                                                                 id : 'CGJGDEDJPLL_action',
@@ -528,21 +518,21 @@ Ext.define('DataIntegration.view.SCQS_Chart', {
                 var mainController = dspApp.getController('Main');
                 mainController.getCGJGDEDJDB_orgcode().setValue('100007');
                 mainController.getCGJGDEDJDB_yearcode().setValue('2011');
-                mainController.getCGJGDEDJDB_materialclasscode().setValue('100101');
+                mainController.getCGJGDEDJDB_materialclasscode().setValue('100102');
 
                 mainController.getCGJGDEDJPLL_orgcode().setValue('100007');
                 mainController.getCGJGDEDJPLL_yearcode().setValue('2011');
-                mainController.getCGJGDEDJPLL_materialclasscode().setValue('100101');
+                mainController.getCGJGDEDJPLL_materialclasscode().setValue('100102');
 
                 mainController.getCGJGZDPLL_orgcode().setValue('100007');
                 mainController.getCGJGZDPLL_yearcode().setValue('2011');
                 
                 mainController.getCGJGPPWDXYD_orgcode().setValue('100007');
                 mainController.getCGJGPPWDXYD_yearcode().setValue('2011');
-                mainController.getCGJGPPWDXYD_materialclasscode().setValue('100101');
+                mainController.getCGJGPPWDXYD_materialclasscode().setValue('100102');
 
                 mainController.getCGJGPPWDXND_orgcode().setValue('100007');
                 mainController.getCGJGPPWDXND_yearcode().setValue('2011');
-                mainController.getCGJGPPWDXND_materialclasscode().setValue('100101');
+                mainController.getCGJGPPWDXND_materialclasscode().setValue('100102');
             }
         });

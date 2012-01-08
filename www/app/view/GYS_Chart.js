@@ -26,7 +26,7 @@ var GYSSLTJ_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + this.y + '个';
+            return '单位：' + this.x + '<br/>供应商个数：' + this.y;
         }
     },
     plotOptions : {

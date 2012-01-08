@@ -3,7 +3,17 @@ var dspApp = null;
 var dataIntegrationLauncher = {
 		starting	: false,
 		started		: false,
+		useNetwork	: true,
+		checkConnection : function(){
+			if(typeof(navigator) != 'undefined' && navigator && typeof(navigator.network) != 'undefined' && navigator.network){
+				var networkState = navigator.network.connection.type;
+				if(Connection.NONE === networkState){
+					this.useNetwork = false;
+				}
+	        }
+		},
 		mainLaunch	:function(){
+			//this.checkConnection();
 			if(typeof(device) !== 'undefined' && device){
 				window.plugins.splashScreen.show();
 			}

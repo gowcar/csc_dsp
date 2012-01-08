@@ -11,31 +11,25 @@ var CGZJEQS_Chart_options = {
     }],
     yAxis : {
         title : {
-            text : '价格（千万）',
+            text : '金额（百万）',
             style : {
                 color : '#4572A7'
             }
         },
-        stackLabels : {
-            enabled : true,
-            style : {
-                fontWeight : 'bold',
-                color : (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+        labels : {
+            formatter : function() {
+                return toDecimal(this.value/1000000) + "百万";
             }
         }
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + this.y + '千万';
+            return '单位：' + this.x + '<br/>金额：' + toDecimal(this.y/1000000) + '百万';
         }
     },
     plotOptions : {
         column : {
-            stacking : 'normal',
-            dataLabels : {
-                enabled : true,
-                color : (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-            }
+            stacking : 'normal'
         }
     },
     legend : {
@@ -95,14 +89,14 @@ var CGZJEYDQS_Chart_options = {
             }],
     yAxis : {
         title : {
-            text : '金额（千万）',
+            text : '金额（百万）',
             style : {
                 color : '#4572A7'
             }
         },
         labels : {
             formatter : function() {
-                return this.value;
+                return toDecimal(this.value/1000000) + "百万";
             },
             style : {
                 color : '#4572A7'
@@ -112,7 +106,7 @@ var CGZJEYDQS_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + toDecimal(this.y) + '千万';
+            return '月份：' + this.x + '<br/>月度采购总金额：' + toDecimal(this.y/1000000) + "百万";
         }
     },
     legend : {
@@ -136,14 +130,14 @@ var CGZJEJDQS_Chart_options = {
             }],
     yAxis : {
         title : {
-            text : '金额（千万）',
+            text : '金额（百万）',
             style : {
                 color : '#4572A7'
             }
         },
         labels : {
             formatter : function() {
-                return this.value;
+                return toDecimal(this.value/1000000) + "百万";
             },
             style : {
                 color : '#4572A7'
@@ -153,7 +147,7 @@ var CGZJEJDQS_Chart_options = {
     },
     tooltip : {
         formatter : function() {
-            return '<b>' + this.x + '</b><br/>' + toDecimal(this.y) + '千万';
+            return '季度：' + this.x + '<br/>季度采购总金额：' + toDecimal(this.y/1000000) + "百万";
         }
     },
     legend : {
