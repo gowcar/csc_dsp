@@ -183,6 +183,7 @@ Ext.define('DataIntegration.controller.Main', {
 	onCGJGQSButtonTap : function() {
 		var CGJGQS_orgcode = this.getCGJGQS_orgcode().getValue();
 		var CGJGQS_yearcode = this.getCGJGQS_yearcode().getValue();
+		var CGJGQS_materialclasscode = this.getCGJGQS_materialclasscode().getValue();
 		var CGJGQS_materialclass = this.getCGJGQS_materialclasscode().record.data.text;
 		if(!isEmpty(DataIntegration.CGJGQS_Chart)) {
 			DataIntegration.CGJGQS_Chart.showLoading();
@@ -224,7 +225,32 @@ Ext.define('DataIntegration.controller.Main', {
 				scope : this
 			});
 		} else {
-			
+			var cacheKey = "CGJGQS" + "_" + CGJGQS_orgcode + "_" + CGJGQS_yearcode + "_" + CGJGQS_materialclasscode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
+				var title = CGJGQS_materialclass + '材料采购价格统计图(' + this.getCGJGQS_orgcode().record.data.text + '-' + CGJGQS_yearcode + '年度)';
+				var categories = [];
+				var sdata = [];
+				for(var idx in datas) {
+					var data = datas[idx];
+					categories.push(data.year + '-' + data.month);
+					sdata.push(parseFloat(data.result));
+				}
+				if(isEmpty(DataIntegration.CGJGQS_Chart)) {
+					CGJGQS_Chart_options.title.text = title;
+					CGJGQS_Chart_options.xAxis[0].categories = categories;
+					CGJGQS_Chart_options.series[0].data = sdata;
+					DataIntegration.CGJGQS_Chart = new Highcharts.Chart(CGJGQS_Chart_options);
+				} else {
+					DataIntegration.CGJGQS_Chart.setTitle({
+						text : title
+					});
+					DataIntegration.CGJGQS_Chart.xAxis[0].setCategories(categories, false);
+					DataIntegration.CGJGQS_Chart.series[0].setData(sdata, false);
+					DataIntegration.CGJGQS_Chart.redraw();
+					DataIntegration.CGJGQS_Chart.hideLoading();
+				}
+			}
 		}
 	},
 	/* 材料数量Top10 */
@@ -233,13 +259,43 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CLSLT10_Chart)) {
 			DataIntegration.CLSLT10_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassNumJson.do',
-			params : {
-				"graphVO.orgcode" : CLSLT10_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassNumJson.do',
+				params : {
+					"graphVO.orgcode" : CLSLT10_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = '材料数量Top10(' + this.getCLSLT10_orgcode().record.data.text + ')';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.materialclassname);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.CLSLT10_Chart)) {
+						CLSLT10_Chart_options.title.text = title;
+						CLSLT10_Chart_options.xAxis[0].categories = categories;
+						CLSLT10_Chart_options.series[0].data = sdata;
+						DataIntegration.CLSLT10_Chart = new Highcharts.Chart(CLSLT10_Chart_options);
+					} else {
+						DataIntegration.CLSLT10_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CLSLT10_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CLSLT10_Chart.series[0].setData(sdata, false);
+						DataIntegration.CLSLT10_Chart.redraw();
+						DataIntegration.CLSLT10_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CLSLT10" + "_" + CLSLT10_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = '材料数量Top10(' + this.getCLSLT10_orgcode().record.data.text + ')';
 				var categories = [];
 				var sdata = [];
@@ -262,9 +318,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CLSLT10_Chart.redraw();
 					DataIntegration.CLSLT10_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}
+		}
 	},
 	/* 材料数量占比图 */
 	onCLSLZBButtonTap : function() {
@@ -272,13 +327,39 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CLSLZB_Chart)) {
 			DataIntegration.CLSLZB_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
-			params : {
-				"graphVO.orgcode" : CLSLZB_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!topMaterialClassPercentageJson.do',
+				params : {
+					"graphVO.orgcode" : CLSLZB_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCLSLZB_orgcode().record.data.text + '材料数量占比图';
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata.push([data.materialclassname, parseFloat(data.value)]);
+					}
+					if(isEmpty(DataIntegration.CLSLZB_Chart)) {
+						CLSLZB_Chart_options.title.text = title;
+						CLSLZB_Chart_options.series[0].data = sdata;
+						DataIntegration.CLSLZB_Chart = new Highcharts.Chart(CLSLZB_Chart_options);
+					} else {
+						DataIntegration.CLSLZB_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CLSLZB_Chart.series[0].setData(sdata, false);
+						DataIntegration.CLSLZB_Chart.redraw();
+						DataIntegration.CLSLZB_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CLSLZB" + "_" + CLSLZB_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCLSLZB_orgcode().record.data.text + '材料数量占比图';
 				var sdata = [];
 				for(var idx in datas) {
@@ -297,9 +378,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CLSLZB_Chart.redraw();
 					DataIntegration.CLSLZB_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}
+		}
 
 	},
 	/* 采购总金额统计图 */
@@ -309,14 +389,44 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGZJEQS_Chart)) {
 			DataIntegration.CGZJEQS_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
-			params : {
-				"graphVO.orgcode" : CGZJEQS_orgcode,
-				"graphVO.year" : CGZJEQS_yearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyCountJson.do',
+				params : {
+					"graphVO.orgcode" : CGZJEQS_orgcode,
+					"graphVO.year" : CGZJEQS_yearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = '采购总金额统计图(' + this.getCGZJEQS_orgcode().record.data.text + '-' + CGZJEQS_yearcode + '年度)';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.orgName);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.CGZJEQS_Chart)) {
+						CGZJEQS_Chart_options.title.text = title;
+						CGZJEQS_Chart_options.xAxis[0].categories = categories;
+						CGZJEQS_Chart_options.series[0].data = sdata;
+						DataIntegration.CGZJEQS_Chart = new Highcharts.Chart(CGZJEQS_Chart_options);
+					} else {
+						DataIntegration.CGZJEQS_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CGZJEQS_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGZJEQS_Chart.series[0].setData(sdata, false);
+						DataIntegration.CGZJEQS_Chart.redraw();
+						DataIntegration.CGZJEQS_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGZJEQS" + "_" + CGZJEQS_orgcode + "_" + CGZJEQS_yearcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = '采购总金额统计图(' + this.getCGZJEQS_orgcode().record.data.text + '-' + CGZJEQS_yearcode + '年度)';
 				var categories = [];
 				var sdata = [];
@@ -339,9 +449,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGZJEQS_Chart.redraw();
 					DataIntegration.CGZJEQS_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}			
+		}
 
 	},
 	/* 采购总金额占比图 */
@@ -351,14 +460,40 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGZJEZB_Chart)) {
 			DataIntegration.CGZJEZB_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
-			params : {
-				"graphVO.orgcode" : CGZJEZB_orgcode,
-				"graphVO.year" : CGZJEZB_yearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getYearMoneyPercentageJson.do',
+				params : {
+					"graphVO.orgcode" : CGZJEZB_orgcode,
+					"graphVO.year" : CGZJEZB_yearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCGZJEZB_orgcode().record.data.text + '采购总金额占比图(' + CGZJEZB_yearcode + '年度)';
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata.push([data.orgName, parseFloat(data.value)]);
+					}
+					if(isEmpty(DataIntegration.CGZJEZB_Chart)) {
+						CGZJEZB_Chart_options.title.text = title;
+						CGZJEZB_Chart_options.series[0].data = sdata;
+						DataIntegration.CGZJEZB_Chart = new Highcharts.Chart(CGZJEZB_Chart_options);
+					} else {
+						DataIntegration.CGZJEZB_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CGZJEZB_Chart.series[0].setData(sdata, false);
+						DataIntegration.CGZJEZB_Chart.redraw();
+						DataIntegration.CGZJEZB_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGZJEZB" + "_" + CGZJEZB_orgcode + "_" + CGZJEZB_yearcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCGZJEZB_orgcode().record.data.text + '采购总金额占比图(' + CGZJEZB_yearcode + '年度)';
 				var sdata = [];
 				for(var idx in datas) {
@@ -377,10 +512,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGZJEZB_Chart.redraw();
 					DataIntegration.CGZJEZB_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}			
+		}
 	},
 	/* 采购总金额月度统计图 */
 	onCGZJEYDQSButtonTap : function() {
@@ -388,13 +521,43 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGZJEYDQS_Chart)) {
 			DataIntegration.CGZJEYDQS_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
-			params : {
-				"graphVO.orgcode" : CGZJEYDQS_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getMonthMoneyTrendJson.do',
+				params : {
+					"graphVO.orgcode" : CGZJEYDQS_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额月度统计图';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.month);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.CGZJEYDQS_Chart)) {
+						CGZJEYDQS_Chart_options.title.text = title;
+						CGZJEYDQS_Chart_options.xAxis[0].categories = categories;
+						CGZJEYDQS_Chart_options.series[0].data = sdata;
+						DataIntegration.CGZJEYDQS_Chart = new Highcharts.Chart(CGZJEYDQS_Chart_options);
+					} else {
+						DataIntegration.CGZJEYDQS_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CGZJEYDQS_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGZJEYDQS_Chart.series[0].setData(sdata, false);
+						DataIntegration.CGZJEYDQS_Chart.redraw();
+						DataIntegration.CGZJEYDQS_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGZJEYDQS" + "_" + CGZJEYDQS_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCGZJEYDQS_orgcode().record.data.text + '采购总金额月度统计图';
 				var categories = [];
 				var sdata = [];
@@ -417,10 +580,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGZJEYDQS_Chart.redraw();
 					DataIntegration.CGZJEYDQS_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}		
+		}
 	},
 	/* 采购总金额季度统计图 */
 	onCGZJEJDQSButtonTap : function() {
@@ -430,15 +591,45 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGZJEJDQS_Chart)) {
 			DataIntegration.CGZJEJDQS_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
-			params : {
-				"graphVO.orgcode" : CGZJEJDQS_orgcode,
-				"graphVO.startyear" : CGZJEJDQS_startyearcode,
-				"graphVO.endyear" : CGZJEJDQS_endyearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getQuarterMoneyTrendJson.do',
+				params : {
+					"graphVO.orgcode" : CGZJEJDQS_orgcode,
+					"graphVO.startyear" : CGZJEJDQS_startyearcode,
+					"graphVO.endyear" : CGZJEJDQS_endyearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCGZJEJDQS_orgcode().record.data.text + '采购总金额季度统计图';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.quarter);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.CGZJEJDQS_Chart)) {
+						CGZJEJDQS_Chart_options.title.text = title;
+						CGZJEJDQS_Chart_options.xAxis[0].categories = categories;
+						CGZJEJDQS_Chart_options.series[0].data = sdata;
+						DataIntegration.CGZJEJDQS_Chart = new Highcharts.Chart(CGZJEJDQS_Chart_options);
+					} else {
+						DataIntegration.CGZJEJDQS_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.CGZJEJDQS_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGZJEJDQS_Chart.series[0].setData(sdata, false);
+						DataIntegration.CGZJEJDQS_Chart.redraw();
+						DataIntegration.CGZJEJDQS_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGZJEJDQS" + "_" + CGZJEJDQS_orgcode + "_" + CGZJEJDQS_startyearcode + "_" + CGZJEJDQS_endyearcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCGZJEJDQS_orgcode().record.data.text + '采购总金额季度统计图';
 				var categories = [];
 				var sdata = [];
@@ -461,9 +652,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGZJEJDQS_Chart.redraw();
 					DataIntegration.CGZJEJDQS_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}			
+		}
 	},
 	/* 供应商数量统计图 */
 	onGYSSLTJButtonTap : function() {
@@ -471,13 +661,43 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.GYSSLTJ_Chart)) {
 			DataIntegration.GYSSLTJ_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierNumJson.do',
-			params : {
-				"graphVO.orgcode" : GYSSLTJ_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierNumJson.do',
+				params : {
+					"graphVO.orgcode" : GYSSLTJ_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = '供应商数量统计图(' + this.getGYSSLTJ_orgcode().record.data.text + ')';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.orgName);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.GYSSLTJ_Chart)) {
+						GYSSLTJ_Chart_options.title.text = title;
+						GYSSLTJ_Chart_options.xAxis[0].categories = categories;
+						GYSSLTJ_Chart_options.series[0].data = sdata;
+						DataIntegration.GYSSLTJ_Chart = new Highcharts.Chart(GYSSLTJ_Chart_options);
+					} else {
+						DataIntegration.GYSSLTJ_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.GYSSLTJ_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.GYSSLTJ_Chart.series[0].setData(sdata, false);
+						DataIntegration.GYSSLTJ_Chart.redraw();
+						DataIntegration.GYSSLTJ_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "GYSSLTJ" + "_" + GYSSLTJ_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = '供应商数量统计图(' + this.getGYSSLTJ_orgcode().record.data.text + ')';
 				var categories = [];
 				var sdata = [];
@@ -500,10 +720,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.GYSSLTJ_Chart.redraw();
 					DataIntegration.GYSSLTJ_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}			
+		}
 	},
 	/* 供应商数量占比图 */
 	onGYSSLZBButtonTap : function() {
@@ -511,13 +729,39 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.GYSSLZB_Chart)) {
 			DataIntegration.GYSSLZB_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
-			params : {
-				"graphVO.orgcode" : GYSSLZB_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getSupplierPercentageJson.do',
+				params : {
+					"graphVO.orgcode" : GYSSLZB_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getGYSSLZB_orgcode().record.data.text + '供应商数量占比图'
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata.push([data.orgName, parseFloat(data.value)]);
+					}
+					if(isEmpty(DataIntegration.GYSSLZB_Chart)) {
+						GYSSLZB_Chart_options.title.text = title;
+						GYSSLZB_Chart_options.series[0].data = sdata;
+						DataIntegration.GYSSLZB_Chart = new Highcharts.Chart(GYSSLZB_Chart_options);
+					} else {
+						DataIntegration.GYSSLZB_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.GYSSLZB_Chart.series[0].setData(sdata, false);
+						DataIntegration.GYSSLZB_Chart.redraw();
+						DataIntegration.GYSSLZB_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "GYSSLZB" + "_" + GYSSLZB_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getGYSSLZB_orgcode().record.data.text + '供应商数量占比图'
 				var sdata = [];
 				for(var idx in datas) {
@@ -536,9 +780,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.GYSSLZB_Chart.redraw();
 					DataIntegration.GYSSLZB_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}			
+		}
 	},
 	/* 项目上线数量统计图 */
 	onXMSXSLTJButtonTap : function() {
@@ -546,13 +789,43 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.XMSXSLTJ_Chart)) {
 			DataIntegration.XMSXSLTJ_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectNumJson.do',
-			params : {
-				"graphVO.orgcode" : XMSXSLTJ_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectNumJson.do',
+				params : {
+					"graphVO.orgcode" : XMSXSLTJ_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = '项目上线数量统计图(' + this.getXMSXSLTJ_orgcode().record.data.text + ')';
+					var categories = [];
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.orgName);
+						sdata.push(parseFloat(data.value));
+					}
+					if(isEmpty(DataIntegration.XMSXSLTJ_Chart)) {
+						XMSXSLTJ_Chart_options.title.text = title;
+						XMSXSLTJ_Chart_options.xAxis[0].categories = categories;
+						XMSXSLTJ_Chart_options.series[0].data = sdata;
+						DataIntegration.XMSXSLTJ_Chart = new Highcharts.Chart(XMSXSLTJ_Chart_options);
+					} else {
+						DataIntegration.XMSXSLTJ_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.XMSXSLTJ_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.XMSXSLTJ_Chart.series[0].setData(sdata, false);
+						DataIntegration.XMSXSLTJ_Chart.redraw();
+						DataIntegration.XMSXSLTJ_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "XMSXSLTJ" + "_" + XMSXSLTJ_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = '项目上线数量统计图(' + this.getXMSXSLTJ_orgcode().record.data.text + ')';
 				var categories = [];
 				var sdata = [];
@@ -575,10 +848,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.XMSXSLTJ_Chart.redraw();
 					DataIntegration.XMSXSLTJ_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}			
+		}
 	},
 	/* 项目上线数量占比图 */
 	onXMSXSLZBButtonTap : function() {
@@ -586,13 +857,39 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.XMSXSLZB_Chart)) {
 			DataIntegration.XMSXSLZB_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
-			params : {
-				"graphVO.orgcode" : XMSXSLZB_orgcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!getProjectPercentageNumJson.do',
+				params : {
+					"graphVO.orgcode" : XMSXSLZB_orgcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getXMSXSLZB_orgcode().record.data.text + '项目上线数量占比图';
+					var sdata = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata.push([data.orgName, parseFloat(data.value)]);
+					}
+					if(isEmpty(DataIntegration.XMSXSLZB_Chart)) {
+						XMSXSLZB_Chart_options.title.text = title;
+						XMSXSLZB_Chart_options.series[0].data = sdata;
+						DataIntegration.XMSXSLZB_Chart = new Highcharts.Chart(XMSXSLZB_Chart_options);
+					} else {
+						DataIntegration.XMSXSLZB_Chart.setTitle({
+							text : title
+						});
+						DataIntegration.XMSXSLZB_Chart.series[0].setData(sdata, false);
+						DataIntegration.XMSXSLZB_Chart.redraw();
+						DataIntegration.XMSXSLZB_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "XMSXSLZB" + "_" + XMSXSLZB_orgcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getXMSXSLZB_orgcode().record.data.text + '项目上线数量占比图';
 				var sdata = [];
 				for(var idx in datas) {
@@ -611,27 +908,75 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.XMSXSLZB_Chart.redraw();
 					DataIntegration.XMSXSLZB_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}			
+		}
 	},
 	/* 材料采购价格和定额单价对比分析图 */
 	onCGJGDEDJDBButtonTap : function() {
 		var CGJGDEDJDB_orgcode = this.getCGJGDEDJDB_orgcode().getValue();
 		var CGJGDEDJDB_yearcode = this.getCGJGDEDJDB_yearcode().getValue();
+		var CGJGDEDJDB_materialclasscode = this.getCGJGDEDJDB_materialclasscode().getValue();
 		var CGJGDEDJDB_materialclass = this.getCGJGDEDJDB_materialclasscode().record.data.text;
 		if(!isEmpty(DataIntegration.CGJGDEDJDB_Chart)) {
 			DataIntegration.CGJGDEDJDB_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceContrastAnalysisJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGDEDJDB_orgcode,
-				"graphVO.year" : CGJGDEDJDB_yearcode,
-				"graphVO.materialdesc" : CGJGDEDJDB_materialclass
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceContrastAnalysisJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGDEDJDB_orgcode,
+					"graphVO.year" : CGJGDEDJDB_yearcode,
+					"graphVO.materialdesc" : CGJGDEDJDB_materialclass
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = CGJGDEDJDB_materialclass + '采购价格和定额单价对比分析图';
+					var subtitle = this.getCGJGDEDJDB_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJDB_yearcode + '年度)';
+					var categories = [];
+					var sdata1 = [];
+					var sdata2 = [];
+					var sdata3 = [];
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata1.push(data.purchaseamount);
+						sdata2.push(data.purchaseprice);
+						sdata3.push(data.fixedprice);
+						var month = null;
+						if(data.month < 10) {
+							month = '' + data.year + '.0' + data.month;
+						} else {
+							month = '' + data.year + '.' + data.month;
+						}
+						categories.push(month);
+					}
+					if(isEmpty(DataIntegration.CGJGDEDJDB_Chart)) {
+						CGJGDEDJDB_Chart_options.title.text = title;
+						CGJGDEDJDB_Chart_options.subtitle.text = subtitle;
+						CGJGDEDJDB_Chart_options.xAxis[0].categories = categories;
+						CGJGDEDJDB_Chart_options.series[0].data = sdata1;
+						CGJGDEDJDB_Chart_options.series[1].data = sdata2;
+						CGJGDEDJDB_Chart_options.series[2].data = sdata3;
+						DataIntegration.CGJGDEDJDB_Chart = new Highcharts.Chart(CGJGDEDJDB_Chart_options);
+					} else {
+						DataIntegration.CGJGDEDJDB_Chart.setTitle({
+							text : title
+						}, {
+							text : subtitle
+						});
+						DataIntegration.CGJGDEDJDB_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGJGDEDJDB_Chart.series[0].setData(sdata1, false);
+						DataIntegration.CGJGDEDJDB_Chart.series[1].setData(sdata2, false);
+						DataIntegration.CGJGDEDJDB_Chart.series[2].setData(sdata3, false);
+						DataIntegration.CGJGDEDJDB_Chart.redraw();
+						DataIntegration.CGJGDEDJDB_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGJGDEDJDB" + "_" + CGJGDEDJDB_orgcode + "_" + CGJGDEDJDB_yearcode + "_" + CGJGDEDJDB_materialclasscode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = CGJGDEDJDB_materialclass + '采购价格和定额单价对比分析图';
 				var subtitle = this.getCGJGDEDJDB_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJDB_yearcode + '年度)';
 				var categories = [];
@@ -671,28 +1016,84 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGJGDEDJDB_Chart.series[2].setData(sdata3, false);
 					DataIntegration.CGJGDEDJDB_Chart.redraw();
 					DataIntegration.CGJGDEDJDB_Chart.hideLoading();
-				}
-			},
-			scope : this
-		});
+				}			
+			}
+		}
 	},
 	/* 材料采购价格和定额单价偏离率分析图 */
 	onCGJGDEDJPLLButtonTap : function() {
 		var CGJGDEDJPLL_orgcode = this.getCGJGDEDJPLL_orgcode().getValue();
 		var CGJGDEDJPLL_yearcode = this.getCGJGDEDJPLL_yearcode().getValue();
+		var CGJGDEDJPLL_materialclasscode = this.getCGJGDEDJPLL_materialclasscode().getValue();
 		var CGJGDEDJPLL_materialclass = this.getCGJGDEDJPLL_materialclasscode().record.data.text;
 		if(!isEmpty(DataIntegration.CGJGDEDJPLL_Chart)) {
 			DataIntegration.CGJGDEDJPLL_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceDeviateAnalysisJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGDEDJPLL_orgcode,
-				"graphVO.year" : CGJGDEDJPLL_yearcode,
-				"graphVO.materialdesc" : CGJGDEDJPLL_materialclass
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!materialPriceDeviateAnalysisJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGDEDJPLL_orgcode,
+					"graphVO.year" : CGJGDEDJPLL_yearcode,
+					"graphVO.materialdesc" : CGJGDEDJPLL_materialclass
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = CGJGDEDJPLL_materialclass + '材料采购价格和定额单价偏离率分析图';
+					var subtitle = this.getCGJGDEDJPLL_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJPLL_yearcode + '年度)';
+					var categories = [];
+					var sdata1 = [];
+					var sdata2 = [];
+					var minValue = -220000000;
+					var maxValue = 220000000;
+					var maxAbs = 0;
+					for(var idx in datas) {
+						var data = datas[idx];
+						sdata1.push(parseFloat(data.smallvalue));
+						sdata2.push(parseFloat(data.bigvalue));
+						categories.push(data.step);
+						//if(Math.abs(parseFloat(data.smallvalue))>maxAbs){
+						//	maxAbs = Math.abs(parseFloat(data.smallvalue));
+						//}
+						//if(Math.abs(parseFloat(data.bigvalue))>maxAbs){
+						//	maxAbs = Math.abs(parseFloat(data.bigvalue));
+						//}
+					}
+					//var minValue = -(maxAbs + 10000000);
+					//var maxValue = maxAbs + 10000000;
+					
+					if(isEmpty(DataIntegration.CGJGDEDJPLL_Chart)) {
+						CGJGDEDJPLL_Chart_options.title.text = title;
+						CGJGDEDJPLL_Chart_options.subtitle.text = subtitle;
+						CGJGDEDJPLL_Chart_options.xAxis[0].categories = categories;
+						CGJGDEDJPLL_Chart_options.xAxis[1].categories = categories;
+						CGJGDEDJPLL_Chart_options.yAxis[0].min = minValue;
+						CGJGDEDJPLL_Chart_options.yAxis[0].max = maxValue;
+						CGJGDEDJPLL_Chart_options.series[0].data = sdata1;
+						CGJGDEDJPLL_Chart_options.series[1].data = sdata2;
+						DataIntegration.CGJGDEDJPLL_Chart = new Highcharts.Chart(CGJGDEDJPLL_Chart_options);
+					} else {
+						DataIntegration.CGJGDEDJPLL_Chart.setTitle({
+							text : title
+						}, {
+							text : subtitle
+						});
+						DataIntegration.CGJGDEDJPLL_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGJGDEDJPLL_Chart.xAxis[1].setCategories(categories, false);
+						DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].min = minValue;
+						DataIntegration.CGJGDEDJPLL_Chart.yAxis[0].max = maxValue;
+						DataIntegration.CGJGDEDJPLL_Chart.series[0].setData(sdata1, false);
+						DataIntegration.CGJGDEDJPLL_Chart.series[1].setData(sdata2, false);
+						DataIntegration.CGJGDEDJPLL_Chart.redraw();
+						DataIntegration.CGJGDEDJPLL_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGJGDEDJPLL" + "_" + CGJGDEDJPLL_orgcode + "_" + CGJGDEDJPLL_yearcode + "_" + CGJGDEDJPLL_materialclasscode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = CGJGDEDJPLL_materialclass + '材料采购价格和定额单价偏离率分析图';
 				var subtitle = this.getCGJGDEDJPLL_orgcode().record.data.text + '股份有限公司(' + CGJGDEDJPLL_yearcode + '年度)';
 				var categories = [];
@@ -741,9 +1142,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGJGDEDJPLL_Chart.redraw();
 					DataIntegration.CGJGDEDJPLL_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}
+		}
 
 		/*
 		 var title = CGJGDEDJPLL_materialclass + '采购价格和定额单价偏离率分析图';
@@ -781,14 +1181,72 @@ Ext.define('DataIntegration.controller.Main', {
 		if(!isEmpty(DataIntegration.CGJGZDPLL_Chart)) {
 			DataIntegration.CGJGZDPLL_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!maxMaterialPriceDeviateJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGZDPLL_orgcode,
-				"graphVO.year" : CGJGZDPLL_yearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!maxMaterialPriceDeviateJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGZDPLL_orgcode,
+					"graphVO.year" : CGJGZDPLL_yearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = '材料价格最大偏离率统计图';
+					var subtitle = this.getCGJGZDPLL_orgcode().record.data.text + '股份有限公司(' + CGJGZDPLL_yearcode + '年度)';
+					var categories = [];
+					var sValue = [];
+					var categoriesLoad = false;
+					for(var idx in datas) {
+						var data = datas[idx];
+						var newData = {
+							"name" : data.material,
+							"data" : []
+						};
+						for(var idx2 in data.values) {
+							newData.data.push(parseFloat(data.values[idx2].value));
+							if(!categoriesLoad) {
+								var month = null;
+								if(data.values[idx2].month < 10) {
+									month = '' + data.values[idx2].year + '.0' + data.values[idx2].month;
+								} else {
+									month = '' + data.values[idx2].year + '.' + data.values[idx2].month;
+								}
+								categories.push(month);
+							}
+						}
+						categoriesLoad = true;
+						sValue.push(newData);
+					}
+					if(isEmpty(DataIntegration.CGJGZDPLL_Chart)) {
+						CGJGZDPLL_Chart_options.title.text = title;
+						CGJGZDPLL_Chart_options.subtitle.text = subtitle;
+						CGJGZDPLL_Chart_options.xAxis[0].categories = categories;
+						for(var i = 0; i < sValue.length; i++) {
+							CGJGZDPLL_Chart_options.series[i] = {};
+							CGJGZDPLL_Chart_options.series[i].name = sValue[i].name;
+							CGJGZDPLL_Chart_options.series[i].data = sValue[i].data;
+						}
+						DataIntegration.CGJGZDPLL_Chart = new Highcharts.Chart(CGJGZDPLL_Chart_options);
+					} else {
+						DataIntegration.CGJGZDPLL_Chart.setTitle({
+							text : title
+						}, {
+							text : subtitle
+						});
+						DataIntegration.CGJGZDPLL_Chart.xAxis[0].setCategories(categories, false);
+						for(var i = 0; i < sValue.length; i++) {
+							DataIntegration.CGJGZDPLL_Chart.series[i].name = sValue[i].name;
+							DataIntegration.CGJGZDPLL_Chart.series[i].setData(sValue[i].data, false);
+						}
+						DataIntegration.CGJGZDPLL_Chart.redraw();
+						DataIntegration.CGJGZDPLL_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGJGZDPLL" + "_" + CGJGZDPLL_orgcode + "_" + CGJGZDPLL_yearcode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = '材料价格最大偏离率统计图';
 				var subtitle = this.getCGJGZDPLL_orgcode().record.data.text + '股份有限公司(' + CGJGZDPLL_yearcode + '年度)';
 				var categories = [];
@@ -839,28 +1297,86 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGJGZDPLL_Chart.redraw();
 					DataIntegration.CGJGZDPLL_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
+			}
+		}
 	},
 	/* 材料价格品牌稳定性分析图 */
 	onCGJGPPWDXYDButtonTap : function() {
 		var CGJGPPWDXYD_orgcode = this.getCGJGPPWDXYD_orgcode().getValue();
 		var CGJGPPWDXYD_yearcode = this.getCGJGPPWDXYD_yearcode().getValue();
+		var CGJGPPWDXYD_materialclasscode = this.getCGJGPPWDXYD_materialclasscode().getValue();
 		var CGJGPPWDXYD_materialclass = this.getCGJGPPWDXYD_materialclasscode().record.data.text;
 		if(!isEmpty(DataIntegration.CGJGPPWDXYD_Chart)) {
 			DataIntegration.CGJGPPWDXYD_Chart.showLoading();
 		}
-
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceMonthAnalysisJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGPPWDXYD_orgcode,
-				"graphVO.materialdesc" : CGJGPPWDXYD_materialclass,
-				"graphVO.year" : CGJGPPWDXYD_yearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceMonthAnalysisJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGPPWDXYD_orgcode,
+					"graphVO.materialdesc" : CGJGPPWDXYD_materialclass,
+					"graphVO.year" : CGJGPPWDXYD_yearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCGJGPPWDXYD_materialclasscode().record.data.text + '材料价格品牌稳定性分析图－月度分析';
+					var subtitle = this.getCGJGPPWDXYD_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXYD_yearcode + '年度)';
+					var categories = [];
+					var sdata = [];
+					var categoriesLoad = false;
+					for(var idx in datas) {
+						if(idx > 3){
+							break;
+						}
+						var data = datas[idx];
+						var newData = {"name":data.brand,"data":[]};
+						for(var idx2 in data.values){
+							var data2 = data.values[idx2];
+							newData.data.push(Math.abs(parseFloat(data2.value)));
+							if(!categoriesLoad){
+								var month = null;
+								if(data2.month < 10) {
+									month = '' + data2.year + '.0' + data2.month;
+								} else {
+									month = '' + data2.year + '.' + data2.month;
+								}
+								categories.push(month);
+							}
+						}
+						sdata.push(newData);
+						categoriesLoad = true;
+					}
+					if(isEmpty(DataIntegration.CGJGPPWDXYD_Chart)) {
+						CGJGPPWDXYD_Chart_options.title.text = title;
+						CGJGPPWDXYD_Chart_options.subtitle.text = subtitle;
+						CGJGPPWDXYD_Chart_options.xAxis[0].categories = categories;
+						for(var i = 0; i < sdata.length; i++) {
+							CGJGPPWDXYD_Chart_options.series[i] = {};
+							CGJGPPWDXYD_Chart_options.series[i].name = sdata[i].name;
+							CGJGPPWDXYD_Chart_options.series[i].data = sdata[i].data;
+						}
+						DataIntegration.CGJGPPWDXYD_Chart = new Highcharts.Chart(CGJGPPWDXYD_Chart_options);
+					} else {
+						DataIntegration.CGJGPPWDXYD_Chart.setTitle({
+							text : title
+						}, {
+							text : subtitle
+						});
+						DataIntegration.CGJGPPWDXYD_Chart.xAxis[0].setCategories(categories, false);
+						for(var i = 0; i < sdata.length; i++) {
+							DataIntegration.CGJGPPWDXYD_Chart.series[i].name = sdata[i].name;
+							DataIntegration.CGJGPPWDXYD_Chart.series[i].setData(sdata[i].data, false);
+						}
+						DataIntegration.CGJGPPWDXYD_Chart.redraw();
+						DataIntegration.CGJGPPWDXYD_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGJGPPWDXYD" + "_" + CGJGPPWDXYD_orgcode + "_" + CGJGPPWDXYD_yearcode + "_" + CGJGPPWDXYD_materialclasscode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCGJGPPWDXYD_materialclasscode().record.data.text + '材料价格品牌稳定性分析图－月度分析';
 				var subtitle = this.getCGJGPPWDXYD_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXYD_yearcode + '年度)';
 				var categories = [];
@@ -912,10 +1428,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGJGPPWDXYD_Chart.redraw();
 					DataIntegration.CGJGPPWDXYD_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}
+		}
 		/*
 		 var title = '材料价格品牌稳定性分析图－月度分析';
 		 var subtitle = this.getCGJGPPWDXYD_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXYD_yearcode + '年度)';
@@ -963,19 +1477,59 @@ Ext.define('DataIntegration.controller.Main', {
 	onCGJGPPWDXNDButtonTap : function() {
 		var CGJGPPWDXND_orgcode = this.getCGJGPPWDXND_orgcode().getValue();
 		var CGJGPPWDXND_yearcode = this.getCGJGPPWDXND_yearcode().getValue();
+		var CGJGPPWDXND_materialclasscode = this.getCGJGPPWDXND_materialclasscode().getValue();
 		var CGJGPPWDXND_materialclass = this.getCGJGPPWDXND_materialclasscode().record.data.text;
 		if(!isEmpty(DataIntegration.CGJGPPWDXND_Chart)) {
 			DataIntegration.CGJGPPWDXND_Chart.showLoading();
 		}
-		Ext.util.JSONP.request({
-			url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceYearAnalysisJson.do',
-			params : {
-				"graphVO.orgcode" : CGJGPPWDXND_orgcode,
-				"graphVO.materialdesc" : CGJGPPWDXND_materialclass,
-				"graphVO.year" : CGJGPPWDXND_yearcode
-			},
-			callbackKey : 'jsonpcallback',
-			callback : function(datas) {
+		if(dataIntegrationLauncher.useNetwork){
+			Ext.util.JSONP.request({
+				url : this.reqURLPref + '/managementjson/statistic/graphJson!materialBrandPriceYearAnalysisJson.do',
+				params : {
+					"graphVO.orgcode" : CGJGPPWDXND_orgcode,
+					"graphVO.materialdesc" : CGJGPPWDXND_materialclass,
+					"graphVO.year" : CGJGPPWDXND_yearcode
+				},
+				callbackKey : 'jsonpcallback',
+				callback : function(datas) {
+					var title = this.getCGJGPPWDXND_materialclasscode().record.data.text + '材料价格品牌稳定性分析图－年度分析';
+					var subtitle = this.getCGJGPPWDXND_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXND_yearcode + '年度)';
+					var categories = [];
+					var sdata1 = [];
+					var sdata2 = [];
+					var categoriesLoad = false;
+					for(var idx in datas) {
+						var data = datas[idx];
+						categories.push(data.brand);
+						sdata1.push(data.minvalue);
+						sdata2.push(data.maxvalue);
+					}
+					if(isEmpty(DataIntegration.CGJGPPWDXND_Chart)) {
+						CGJGPPWDXND_Chart_options.title.text = title;
+						CGJGPPWDXND_Chart_options.subtitle.text = subtitle;
+						CGJGPPWDXND_Chart_options.xAxis[0].categories = categories;
+						CGJGPPWDXND_Chart_options.series[0].data = sdata1;
+						CGJGPPWDXND_Chart_options.series[1].data = sdata2;
+						DataIntegration.CGJGPPWDXND_Chart = new Highcharts.Chart(CGJGPPWDXND_Chart_options);
+					} else {
+						DataIntegration.CGJGPPWDXND_Chart.setTitle({
+							text : title
+						}, {
+							text : subtitle
+						});
+						DataIntegration.CGJGPPWDXND_Chart.xAxis[0].setCategories(categories, false);
+						DataIntegration.CGJGPPWDXND_Chart.series[0].setData(sdata1, false);
+						DataIntegration.CGJGPPWDXND_Chart.series[1].setData(sdata2, false);
+						DataIntegration.CGJGPPWDXND_Chart.redraw();
+						DataIntegration.CGJGPPWDXND_Chart.hideLoading();
+					}
+				},
+				scope : this
+			});
+		} else {
+			var cacheKey = "CGJGPPWDXND" + "_" + CGJGPPWDXND_orgcode + "_" + CGJGPPWDXND_yearcode + "_" + CGJGPPWDXND_materialclasscode;
+			if(typeof(window[cacheKey]) != 'undefined' && window[cacheKey]){
+				var datas = window[cacheKey];
 				var title = this.getCGJGPPWDXND_materialclasscode().record.data.text + '材料价格品牌稳定性分析图－年度分析';
 				var subtitle = this.getCGJGPPWDXND_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXND_yearcode + '年度)';
 				var categories = [];
@@ -1007,10 +1561,8 @@ Ext.define('DataIntegration.controller.Main', {
 					DataIntegration.CGJGPPWDXND_Chart.redraw();
 					DataIntegration.CGJGPPWDXND_Chart.hideLoading();
 				}
-			},
-			scope : this
-		});
-
+			}
+		}
 		/*
 		 var title = '材料价格品牌稳定性分析图－年度分析';
 		 var subtitle = this.getCGJGPPWDXND_orgcode().record.data.text + '股份有限公司(' + CGJGPPWDXND_yearcode + '年度)';
@@ -1146,13 +1698,26 @@ Ext.define('DataIntegration.controller.Main', {
 			fakeResult.push({
 				result : 'success'
 			});
-			//dataIntegrationLauncher.useNetwork = false;
+			dataIntegrationLauncher.useNetwork = false;
 		} else {
 			fakeResult.push({
 				result : 'fail'
 			});
 		}
-		this.processAuthorizeResult(fakeResult);
+		if(!dataIntegrationLauncher.useNetwork){
+			var head = document.getElementsByTagName("head")[0]; 
+	        var script = document.createElement('script');
+	        script.id = 'cacheDataScript';
+	        script.type = 'text/javascript';
+	        var me = this;
+	        script.onload = function(){
+	        	me.processAuthorizeResult(fakeResult);
+	        }; 
+	        script.src = 'app/cache/CacheData.js'; 
+	        head.appendChild(script); 
+		} else {
+			this.processAuthorizeResult(fakeResult);
+		}
 		/*
 		 * Ext.util.JSONP.request({
 		 * url:'http://jc.cscec.com/managementjson/statistic/graphJson!userLoginJson.do',
